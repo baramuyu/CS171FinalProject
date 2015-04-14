@@ -1,1 +1,3 @@
-# CS171FinalProject
+## CS171FinalProject ##
+
+### 1. PARTIES
