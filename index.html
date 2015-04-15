@@ -19,6 +19,8 @@
     <!-- vis classes-->
     <script src = "js/agevis.js"></script>
     <script src = "js/countvis.js"></script>
+    <script src = "js/multiline.js"></script>
+    <script src = "js/datawrangling.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
 
     <!-- stylesheet-->
@@ -30,6 +32,7 @@
         <h1>BUT THE DROUGHT CAME BACK? <br>THE VERY NEXT YEAR!</h1>
         <h4>Harvard University | CS171 |Final Project Proposal </h4>
         <div class="row">
+            <div class="col-md-1" id="multiLineVis">
             <div class="col-md-9" id="countVis"></div>
             <div class="col-md-3" id="ageVis">
             </div>
@@ -41,6 +44,7 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
     // variables keeping global knowledge of the data
     var allData = [];
+    var resData = [];
     var metaData = {};
     var width = 1500;
     var height = 1500;
@@ -52,6 +56,9 @@ $(function(){ // this function is called after the HTML document is fully loaded
         var MyEventHandler = new Object();
 
         //TODO: Instantiate all Vis Objects here
+        var svg_multi = d3.select("#multiLineVis").append("svg")
+                .attr("width", 1000)
+                .attr("height", 500);
         var svg_count = d3.select("#countVis").append("svg")
                 .attr("width", 750)
                 .attr("height", 350);
@@ -63,8 +70,10 @@ $(function(){ // this function is called after the HTML document is fully loaded
         // TODO: bind the eventHandler to the Vis Objects
         // events will be created from the CountVis object (nothing to do here)
         // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
+        MultiLineVis = new MultiLineVis(svg_multi);
         CountVis = new CountVis(svg_count, allData, metaData, MyEventHandler);
         AgeVis = new AgeVis(svg_age, allData, metaData);
+        Wrangling = new Wrangling();
 
         $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
             var startDate = dateFormatter(new Date(selDateStart))
@@ -87,38 +96,12 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
     // call this function after both files are loaded -- error should be "null" if no error
     var dataLoaded = function (error, _resData, _stoData, _dicData, _usageData) {
-
         if (!error) {
 
-            //data flatten
-            var resData = [];
-            res = _resData.map(function (d) {
+            //data wrangling
+            resData = Wrangling.resDataWrang(_resData);
 
-                var stoData = d.Storage
-
-                for (var date in stoData) {
-                  if (stoData.hasOwnProperty(date)) {
-                    // console.log('this is storage (' + date + ') for sure. Value: ' + stoData[date]);
-
-                    var tmp = {
-                        date: dateFormatter.parse(date),
-                        name: d.Station,
-                        value: parseInt(stoData[date]) //Storage in reservoir
-                    };
-
-                    resData.push(tmp);
-
-                  }
-                }
-                return true;
-            })
-
-
-
-            debugger;
-
-            //initVis();
-
+            MultiLineVis.createMultiLine(resData)
         }
     }
 
