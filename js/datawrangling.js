@@ -3,25 +3,41 @@ Wrangling = function(){
 
 Wrangling.resDataWrang = function(_resData){
 	var resData = [];
-	var dateFormatter = d3.time.format("%Y%m%d"); // see: https://github.com/mboresck/d3/wiki/Time-Formatting
 
     _resData.forEach(function(d){
 
     	stoData = [];
 		for (var date in d.Storage ) {
 			stoData.push({
-				date: dateFormatter.parse(date),
+				date: date,
 				storage: d.Storage[date]
 			})
 		}
 
     	resData.push({
     			name: d.Station,
+                capacity: d.Capacity,
+                latitude: d.Latitude,
+                longitude: d.Longitude,
     			values: stoData
     	})
     })
     console.log("RESDATA",resData)
+
+    this.saveToFile(resData,"reservoirDataForMultiLine.json")
+
     return resData
+}
+
+Wrangling.saveToFile = function(object, filename){
+    var blob, blobText;
+    blobText = [JSON.stringify(object, null, '\t')];
+    blob = new Blob(blobText, {
+        type: "text/plain;charset=utf-8"
+    });
+    saveAs(blob, filename);
+
+    console.log("finish!")
 }
 
 

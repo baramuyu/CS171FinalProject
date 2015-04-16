@@ -22,6 +22,7 @@
     <script src = "js/multiline.js"></script>
     <script src = "js/datawrangling.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
+    <script src="libs/FileSaver.js"></script>
 
     <!-- stylesheet-->
     <link rel="stylesheet" type="text/css" href="css/myStyle.css">
@@ -73,6 +74,8 @@ $(function(){ // this function is called after the HTML document is fully loaded
         MultiLineVis = new MultiLineVis(svg_multi);
         CountVis = new CountVis(svg_count, allData, metaData, MyEventHandler);
         AgeVis = new AgeVis(svg_age, allData, metaData);
+        
+        //***Data Wrangling
         Wrangling = new Wrangling();
 
         $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
@@ -95,13 +98,15 @@ $(function(){ // this function is called after the HTML document is fully loaded
     }
 
     // call this function after both files are loaded -- error should be "null" if no error
-    var dataLoaded = function (error, _resData, _stoData, _dicData, _usageData) {
+    var dataLoaded = function (error, _resData, _dicData, _usageData) {
         if (!error) {
 
-            //data wrangling
-            resData = Wrangling.resDataWrang(_resData);
+            //***data wrangling
+            //resData = Wrangling.resDataWrang(_resData);
 
-            MultiLineVis.createMultiLine(resData)
+            //MultiLineVis.createMultiLine(resData)
+            resDataTop20 = MultiLineVis.PickTop20(_resData)
+            MultiLineVis.createMultiLine(resDataTop20)
         }
     }
 
@@ -110,8 +115,9 @@ $(function(){ // this function is called after the HTML document is fully loaded
         //TODO: load data here and call "dataLoaded" afterwards
         // Hint: http://giscollective.org/d3-queue-js/
         queue()
-            .defer(d3.json, 'data/reservoir.json') // reservoir　data
-            .defer(d3.json, 'data/storage.json') // reservoir　data
+            //.defer(d3.json, 'data/reservoir.json') // reservoir　data
+            //.defer(d3.json, 'data/storage.json') // reservoir　data
+            .defer(d3.json, 'data/reservoirDataForMultiLine.json') //
             .defer(d3.csv, 'data/datadictionary.csv') // datadictionary data
             .defer(d3.csv, 'data/usco2010.csv') // usco2010 data
             .await(dataLoaded) // calling function

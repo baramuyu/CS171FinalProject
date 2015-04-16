@@ -9,11 +9,28 @@ MultiLineVis = function(_parentElement){
     this.parentElement = _parentElement;
 }
 
+MultiLineVis.PickTop20 = function(_resData){
+    var data = _resData;
+    var res = [];
+    var count = 0;
+
+    sdata = data.sort(function(a, b) {
+        return d3.descending(a["capacity"],b["capacity"]);
+    });
+
+    sdata.forEach(function(d){
+        if(count <= 10)
+            res.push(d)
+        count++;  
+    })
+    return res;
+}
+
 MultiLineVis.createMultiLine = function(_resData){
     var data = _resData
 
-    var margin = {top: 20, right: 80, bottom: 30, left: 50},
-        width = 960 - margin.left - margin.right,
+    var margin = {top: 20, right: 200, bottom: 30, left: 100},
+        width = 1160 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y%m%d").parse;
@@ -36,7 +53,7 @@ MultiLineVis.createMultiLine = function(_resData){
 
     var line = d3.svg.line()
         .interpolate("basis")
-        .x(function(d) { return x(d.date); })
+        .x(function(d) { return x(parseDate(d.date)); })
         .y(function(d) { return y(d.storage); });
 
     var svg = d3.select("#multiLineVis").append("svg")
@@ -59,8 +76,8 @@ MultiLineVis.createMultiLine = function(_resData){
       //     })
       //   };
       // });
-
-      x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return v.date; }); }));
+      
+      x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
 
       y.domain([
         d3.min(data, function(c) { return d3.min(c.values, function(v) { return v.storage; }); }),
@@ -80,7 +97,7 @@ MultiLineVis.createMultiLine = function(_resData){
           .attr("y", 6)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text("Temperature (ºF)");
+          .text("Storage(Mgal?)");
 
       var city = svg.selectAll(".city")
           .data(data)
@@ -94,7 +111,7 @@ MultiLineVis.createMultiLine = function(_resData){
 
       city.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-          .attr("transform", function(d) { return "translate(" + x(d.value.date) + "," + y(d.value.storage) + ")"; })
+          .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.storage) + ")"; })
           .attr("x", 3)
           .attr("dy", ".35em")
           .text(function(d) { return d.name; });
