@@ -8,7 +8,7 @@ StackedBarVis.createStackBar = function(_resData){
     var oldData = _resData;
 
     var margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = 500 - margin.left - margin.right,
+        width = 1000 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
@@ -17,8 +17,9 @@ StackedBarVis.createStackBar = function(_resData){
     var y = d3.scale.linear()
         .rangeRound([height, 0]);
 
-    var color = d3.scale.ordinal()
-        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    var color = d3.scale.category20()
+    // var color = d3.scale.ordinal()
+    //     .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -35,31 +36,88 @@ StackedBarVis.createStackBar = function(_resData){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      //color.domain(data.map(function(d){return d.state}))
-
+      //Data wrangling
       var y0 = 0;
       var y1 = 0;
       data = 
-      {
-          state: "Current Storage",
+      [{
+          state: "Storage on mm/dd/yyyy",
           storages: oldData.map(function(d) {
                         var latestData = d.values.length - 1;
-                        y0 = y1;
-                        y1 = y0 +d.values[latestData].storage;
                         return {
-                            name: d.name,
-                            y0: y0,
-                            y1: y1
+                            "name": d.name,
+                            "y0": 0, //temporary
+                            "y1": 0, //temporary
+                            "value": +d.values[latestData].storage,
+                            "capacity": +d.capacity
                         }
                     }),
-          total: y1
-      }
+          total: 0 //temporary
+      },
+      {
+          state: "Storage Capacity",
+          storages: oldData.map(function(d) {
+                        var latestData = d.values.length - 1;
+                        return {
+                            "name": d.name,
+                            "y0": 0, //temporary
+                            "y1": 0, //temporary
+                            "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
+                        }
+                    }),
+          total: 0 //temporary
+      }]
+
+       //sorting
+      data[0].storages = data[0].storages.sort(function(a, b){
+          return d3.descending(a["capacity"], b["capacity"]);
+      })
+      data[1].storages = data[1].storages.sort(function(a, b){
+          return d3.descending(a["capacity"], b["capacity"]);
+      })
+      
+      //Current
+      //update y0,y1
+      var y0 = 0;
+      var y1 = 0;
+      //current storage
+      data[0].storages.map(function(d){
+          y0 = y1;
+          y1 = y0 + d.value;
+          d.y0 = y0;
+          d.y1 = y1;
+      })
+
+      //update total
+      data[0].total = y1;
+
+      //Capaity
+      //update y0,y1
+      var y0 = 0;
+      var y1 = 0;
+      //current storage
+      data[1].storages.map(function(d){
+          y0 = y1;
+          y1 = y0 + d.capacity;
+          d.y0 = y0;
+          d.y1 = y1;
+      })
+
+      //update total
+      data[1].total = y1;
 
 
-      //data.sort(function(a, b) { return b.total - a.total; });
+      //total capacity
+      var totalCap = 0;
+      oldData.map(function(d) {
+          if(!isNaN(d.capacity))
+              totalCap += +d.capacity;
+      })
 
-      x.domain([data.state]);
-      y.domain([0, data.total]);
+      //domain
+      x.domain([data[0].state,data[1].state]);
+      //y.domain([0, data[0].total]);
+      y.domain([0,totalCap]);
 
       svg.append("g")
           .attr("class", "x axis")
@@ -74,48 +132,58 @@ StackedBarVis.createStackBar = function(_resData){
           .attr("y", 6)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text("Population");
+          .text("Storage");
 
-
-      debugger;
-
-      //var state = svg.selectAll(".state")
-      var state = svg.selectAll(".test")
-          .data(data)
+      var bar = svg.selectAll(".g")
+        .data(data)
         .enter().append("g")
           .attr("class", "g")
-          .attr("transform", function(d) { return "translate(" + x(d.state) + ",0)"; })
-          .attr("class", "test" );
+          .attr("transform", function(d) {return "translate(" + x(d.state) + ",0)"; });
 
-      state.selectAll("rect")
-          .data(function(d) { 
-            console.log(d)
-            return d.storages; })
+      bar.selectAll("rect")
+          .data(function(d){return d.storages})
         .enter().append("rect")
           .attr("width", x.rangeBand())
-          .attr("y", function(d) { 
-            console.log(d)
-            return y(d.y1); 
+          .attr("y", function(d) { return y(d.y1); 
           })
-          .attr("height", function(d) { return y(d.y0) - y(d.y1); })
-          .style("fill", function(d) { return color(d.state); });
+          .attr("height", function(d) {return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
+          .style("fill", function(d) { return color(d.name); });
 
-      var legend = svg.selectAll(".legend")
-          .data(color.domain().slice().reverse())
-        .enter().append("g")
-          .attr("class", "legend")
-          .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      // var capa = svg.selectAll(".g")
+      //   .data(data)
+      //   .enter().append("g")
+      //     .attr("class", "g")
+      //     .attr("transform", function(d) { return "translate(40,0)"; });
 
-      legend.append("rect")
-          .attr("x", width - 18)
-          .attr("width", 18)
-          .attr("height", 18)
-          .style("fill", color);
+      // capa.selectAll("rect")
+      //     .data(function(d){return d.storages})
+      //   .enter().append("rect")
+      //     .attr("width", x.rangeBand())
+      //     .attr("y", function(d) { return y(d.y1); 
+      //     })
+      //     .attr("height", function(d) {
+      //       console.log(d.name,parseFloat(y(d.y0)) - parseFloat(y(d.y1)))
+      //      return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
+      //     .style("fill", function(d) { return color(d.name); });
 
-      legend.append("text")
-          .attr("x", width - 24)
-          .attr("y", 9)
-          .attr("dy", ".35em")
-          .style("text-anchor", "end")
-          .text(function(d) { return d; });
+
+
+      // var legend = svg.selectAll(".legend")
+      //     .data(data.storages)
+      //   .enter().append("g")
+      //     .attr("class", "legend")
+      //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+      // legend.append("rect")
+      //     .attr("x", width - 18)
+      //     .attr("width", 18)
+      //     .attr("height", 18)
+      //     .style("fill", color);
+
+      // legend.append("text")
+      //     .attr("x", width - 24)
+      //     .attr("y", 9)
+      //     .attr("dy", ".35em")
+      //     .style("text-anchor", "end")
+      //     .text(function(d) { return d; });
 }
