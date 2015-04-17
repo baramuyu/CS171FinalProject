@@ -29,6 +29,87 @@ Wrangling.resDataWrang = function(_resData){
     return resData
 }
 
+
+Wrangling.usageDataWrang = function(_usageData, _dicData){
+	var usageData = [];
+
+	//filter by California
+	filUsageData = _usageData.filter(function(d){ return d.STATE == "CA"})
+	console.log("filterCA: ",filUsageData.length)
+
+	//get neccesary column name
+	var colList = [];
+	_dicData.map(function(d){
+		if(d.Source != "")
+			colList.push(d);
+	})
+
+	//aggregate by all county
+	var agUsageData = {}; 
+	filUsageData.map(function(d){
+		for (var column in d) {
+			if(!isNaN(+d[column]) && column != "STATE" && column != "COUNTY"){
+
+				if(agUsageData[column]==undefined)	
+					agUsageData[column] = 0;
+			
+				agUsageData[column] += +d[column];
+			}
+		}
+	})
+
+	//create Nodes
+	var nodes = [];
+	var tmp = [];
+	colList.map(function(d){
+		if(tmp.indexOf(d.Source) == -1)
+			tmp.push(d.Source)
+		if(tmp.indexOf(d.Type) == -1)
+			tmp.push(d.Type)
+		if(tmp.indexOf(d.Use) == -1)
+			tmp.push(d.Use)
+	})
+	nodes = tmp.map(function(d){
+		return{
+			"name" : d
+		};
+	})
+	console.log(nodes.length)
+
+	//create Links
+	var links = [];
+	colList.map(function(d){
+		links.push({
+			"source": d.Source,
+			"target": d.Type ,
+			"value": agUsageData[d.ColumnTag]
+		})
+		links.push({
+			"source": d.Type,
+			"target": d.Use ,
+			"value": agUsageData[d.ColumnTag]
+		})
+	})
+	console.log(links.length)
+
+	var result = 
+		{
+			"nodes": nodes,
+			"links": links
+		};
+
+	console.log(result)
+
+	//Export files
+	//this.saveToFile(agUsageData,"aggregatedUsageData.json")
+	//this.saveToFile(colList,"dictionaryData.json")
+	//this.saveToFile(result,"sankeyData.json")
+
+	return result;
+}
+
+
+
 Wrangling.saveToFile = function(object, filename){
     var blob, blobText;
     blobText = [JSON.stringify(object, null, '\t')];
@@ -43,26 +124,6 @@ Wrangling.saveToFile = function(object, filename){
 
 
 
-    //     for (var date in resData) {
-    //       if (resData.hasOwnProperty(date)) {
-    //         // console.log('this is resrage (' + date + ') for sure. Value: ' + resData[date]);
-
-    //         var perdayData = {
-    //         	date: dateFormatter.parse(date),
-    //             value: parseInt(resData[date]) //resrage in reservoir
-    //         }
-
-    //         var StationData = {
-    //         	name: d.Station,
-    //             values: perdayData
-    //         };
-
-    //         resData.push(StationData);
-
-    //       }
-    //     }
-    // })
-    // return resData;
 
            	
 
@@ -71,29 +132,6 @@ Wrangling.saveToFile = function(object, filename){
 
 
 
-
-
-
-
-
-            //     var resData = d.resrage
-
-            //     for (var date in resData) {
-            //       if (resData.hasOwnProperty(date)) {
-            //         // console.log('this is resrage (' + date + ') for sure. Value: ' + resData[date]);
-
-            //         var tmp = {
-            //             date: dateFormatter.parse(date),
-            //             name: d.Station,
-            //             value: parseInt(resData[date]) //resrage in reservoir
-            //         };
-
-            //         resData.push(tmp);
-
-            //       }
-            //     }
-            //     return true;
-            // })
 
 
 

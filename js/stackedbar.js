@@ -7,8 +7,8 @@ StackedBarVis.createStackBar = function(_resData){
 
     var oldData = _resData;
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 40},
-        width = 1000 - margin.left - margin.right,
+    var margin = {top: 20, right: 500, bottom: 30, left: 40},
+        width = 1500 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
@@ -149,41 +149,22 @@ StackedBarVis.createStackBar = function(_resData){
           .attr("height", function(d) {return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
           .style("fill", function(d) { return color(d.name); });
 
-      // var capa = svg.selectAll(".g")
-      //   .data(data)
-      //   .enter().append("g")
-      //     .attr("class", "g")
-      //     .attr("transform", function(d) { return "translate(40,0)"; });
-
-      // capa.selectAll("rect")
-      //     .data(function(d){return d.storages})
-      //   .enter().append("rect")
-      //     .attr("width", x.rangeBand())
-      //     .attr("y", function(d) { return y(d.y1); 
-      //     })
-      //     .attr("height", function(d) {
-      //       console.log(d.name,parseFloat(y(d.y0)) - parseFloat(y(d.y1)))
-      //      return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
-      //     .style("fill", function(d) { return color(d.name); });
-
-
-
       // var legend = svg.selectAll(".legend")
-      //     .data(data.storages)
+      //     .data(data[0].storages)
       //   .enter().append("g")
       //     .attr("class", "legend")
-      //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+      //     .attr("transform", function(d, i) { return "translate(0," + (height - (i * 20)) + ")"; });
 
       // legend.append("rect")
       //     .attr("x", width - 18)
       //     .attr("width", 18)
       //     .attr("height", 18)
-      //     .style("fill", color);
+      //     .style("fill", function(d) { return color(d.name); });
 
       // legend.append("text")
       //     .attr("x", width - 24)
       //     .attr("y", 9)
       //     .attr("dy", ".35em")
-      //     .style("text-anchor", "end")
-      //     .text(function(d) { return d; });
+      //     .style("text-anchor", "start")
+      //     .text(function(d) { return d.name; });
 }
