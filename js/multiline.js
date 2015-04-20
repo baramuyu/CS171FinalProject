@@ -1,10 +1,4 @@
-/**
- * AgeVis object for HW3 of CS171
- * @param _parentElement -- the HTML or SVG element (D3 node) to which to attach the vis
- * @param _data -- the data array
- * @param _metaData -- the meta-data / data description object
- * @constructor
- */
+
 MultiLineVis = function(_parentElement){
     this.parentElement = _parentElement;
 }
@@ -62,21 +56,6 @@ MultiLineVis.createMultiLine = function(_resData){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      // color.domain(d3.keys(data[0]).filter(function(key) { return key !== "date"; }));
-
-      // data.forEach(function(d) {
-      //   d.date = parseDate(d.date);
-      // });
-
-      // var cities = color.domain().map(function(name) {
-      //   return {
-      //     name: name,
-      //     values: data.map(function(d) {
-      //       return {date: d.date, temperature: +d[name]};
-      //     })
-      //   };
-      // });
-      
       x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
 
       y.domain([

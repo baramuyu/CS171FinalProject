@@ -1,5 +1,9 @@
-## CS171FinalProject ##
+California Drought
+===
 
-### 1. PARTIES
+CS171 Final Project repository for Ben Steineman and Victor Liu 
 
-change
+---
+**Name**: Ben Steineman, Victor Liu
+
+**Email**: bsteineman@gmail.com, vliu@enphaseenergy.com
