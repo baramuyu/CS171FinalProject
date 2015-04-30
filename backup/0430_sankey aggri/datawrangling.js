@@ -68,8 +68,8 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 				tmp.push(d.Type)
 			if(tmp.indexOf(d.Use) == -1)
 				tmp.push(d.Use)
-			if(tmp.indexOf(d.UseDetail) == -1 && d.UseDetail != "")
-				tmp.push(d.UseDetail)
+			// if(tmp.indexOf(d.UseDetail) == -1 && d.UseDetail != "")
+			// 	tmp.push(d.UseDetail)
 			// if(tmp.indexOf(d.UseDetail2) == -1)
 			// 	tmp.push(d.UseDetail2)
 	})
@@ -94,7 +94,7 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 			links.push({
 				"source": d.Source,
 				"target": d.Type,
-				"value": (d.Source != "N/A" && d.Type != "N/A") ? agUsageData[d.ColumnTag] : 1
+				"value": agUsageData[d.ColumnTag]
 			})
 		}
 		aggrFlg = false; //initialize
@@ -108,24 +108,23 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 			links.push({
 				"source": d.Type,
 				"target": d.Use ,
-				"value":  (d.Type != "N/A" && d.Use != "N/A") ? agUsageData[d.ColumnTag] : 1
+				"value": agUsageData[d.ColumnTag]
 			})
 		}
-		aggrFlg = false; //initialize
-		links.forEach(function(e){
-			if(e.source == d.Use && e.target == d.UseDetail){
-				e.value += agUsageData[d.ColumnTag];
-				aggrFlg = true;
-			}
-		})
-		if(!aggrFlg && d.Use != "" && d.UseDetail != ""){
-			links.push({
-				"source": d.Use,
-				"target": d.UseDetail ,
-				"value":  (d.Use != "N/A" && d.UseDetail != "N/A") ? agUsageData[d.ColumnTag] : 1
-			})
-		}
-
+		// aggrFlg = false; //initialize
+		// links.forEach(function(e){
+		// 	if(e.source == d.Use && e.target == d.UseDetail){
+		// 		e.value += agUsageData[d.ColumnTag];
+		// 		aggrFlg = true;
+		// 	}
+		// })
+		// if(!aggrFlg && d.Use != "" && d.UseDetail != ""){
+		// 	links.push({
+		// 		"source": d.Use,
+		// 		"target": d.UseDetail ,
+		// 		"value": 0
+		// 	})
+		// }
 	})
 	console.log(links.length)
 
