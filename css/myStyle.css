@@ -1,6 +1,7 @@
 body{
     font-family: 'PT Sans', sans-serif;
 }
+/*for multi line*/
 .axis path,
 .axis line {
   fill: none;
@@ -16,4 +17,26 @@ body{
   fill: none;
   stroke: steelblue;
   stroke-width: 1.5px;
+}
+
+/*for sankey*/
+.node rect {
+  cursor: move;
+  fill-opacity: .9;
+  shape-rendering: crispEdges;
+}
+ 
+.node text {
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff;
+}
+ 
+.link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: .2;
+}
+ 
+.link:hover {
+  stroke-opacity: .5;
 }

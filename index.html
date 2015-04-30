@@ -6,7 +6,6 @@
 
     <!-- ADD Libraries-->
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
 
@@ -17,11 +16,11 @@
     <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
 
     <!-- vis classes-->
-    <script src = "js/agevis.js"></script>
-    <script src = "js/countvis.js"></script>
     <script src = "js/multiline.js"></script>
     <script src = "js/datawrangling.js"></script>
     <script src = "js/stackedbar.js"></script>
+    <script src = "js/sankey.js"></script>
+    <script src = "js/sankeyvis.js"></script>
     <script src="http://d3js.org/queue.v1.min.js"></script>
     <script src="libs/FileSaver.js"></script>
 
@@ -32,13 +31,18 @@
 <body>
     <div class="container">
         <h1>BUT THE DROUGHT CAME BACK? <br>THE VERY NEXT YEAR!</h1>
-        <h4>Harvard University | CS171 |Final Project Proposal </h4>
+        <h4>Harvard University | CS171 | Final Project</h4>
         <div class="row">
-            <div class="col-md-1" id="multiLineVis">
-            <div class="col-md-2" id="stackedbarVis">
-            <div class="col-md-9" id="countVis"></div>
-            <div class="col-md-3" id="ageVis">
-            </div>
+            <h3>Reservoir Storage and Capacity  </h3>
+            <div class="col-md-2" id="stackedbarVis"></div>
+        </div>
+        <div class="row">
+            <h3>Storage Changes Over Time  </h3>
+            <div class="col-md-1" id="multiLineVis"></div>
+        </div>
+        <div class="row">
+            <h3>Water Withdraw Diagram </h3>
+            <div class="col-md-4" id="sankeyVis"></div>
         </div>
     </div>
 
@@ -58,51 +62,27 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
         var MyEventHandler = new Object();
 
-        //TODO: Instantiate all Vis Objects here
         var svg_multi = d3.select("#multiLineVis").append("svg")
                 .attr("width", 1000)
                 .attr("height", 500);
 
         var svg_stack = d3.select("#stackedbarVis").append("svg")
-                .attr("width", 500)
+                .attr("width", 1500)
                 .attr("height", 500);
 
-        var svg_count = d3.select("#countVis").append("svg")
-                .attr("width", 750)
-                .attr("height", 350);
+        var svg_sankey = d3.select("#sankeyVis").append("svg")
+                .attr("width", 1500)
+                .attr("height", 1000);
 
-        var svg_age = d3.select("#ageVis").append("svg")
-                .attr("width", 230)
-                .attr("height", 330);
-
-        // TODO: bind the eventHandler to the Vis Objects
-        // events will be created from the CountVis object (nothing to do here)
-        // events will be consumed by the PrioVis and AgeVis object (binding should happen here)
         MultiLineVis = new MultiLineVis(svg_multi);
         StackedBarVis = new StackedBarVis(svg_stack);
-        CountVis = new CountVis(svg_count, allData, metaData, MyEventHandler);
-        AgeVis = new AgeVis(svg_age, allData, metaData);
-
-        
+        SankeyVis = new SankeyVis(svg_sankey);
+      
         //***Data Wrangling
         Wrangling = new Wrangling();
 
-        $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
-            var startDate = dateFormatter(new Date(selDateStart))
-            var endDate = dateFormatter(new Date(selDateEnd))
-            var currentBrush = d3.select("#brushInfo") //current brush
-            if(startDate == endDate){
-                currentBrush
-                    .text(""); 
-                return;
-            }
-
-            AgeVis.onSelectionChange(selDateStart,selDateEnd);
-
-            currentBrush
-                .text(dateFormatter(new Date(selDateStart))+"~"+dateFormatter(new Date(selDateEnd)))
-
-        });
+        // $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
+        // });
 
     }
 
@@ -110,28 +90,34 @@ $(function(){ // this function is called after the HTML document is fully loaded
     var dataLoaded = function (error, _resData, _dicData, _usageData) {
         if (!error) {
 
-            //***data wrangling
+            //***data wrangling***
             //resData = Wrangling.resDataWrang(_resData);
-
-            //MultiLineVis.createMultiLine(resData)
+            usageData = Wrangling.usageDataWrang(_usageData, _dicData)
+            
+            //multipule line chart
             resDataTop20 = MultiLineVis.PickTop20(_resData);
             MultiLineVis.createMultiLine(resDataTop20);
 
+            //stacked bar chart
             StackedBarVis.createStackBar(_resData);
+
+            //sankey chart
+            SankeyVis.createSankey(usageData);
 
         }
     }
 
     var startHere = function(){
 
-        //TODO: load data here and call "dataLoaded" afterwards
         // Hint: http://giscollective.org/d3-queue-js/
         queue()
             //.defer(d3.json, 'data/reservoir.json') // reservoir　data
             //.defer(d3.json, 'data/storage.json') // reservoir　data
-            .defer(d3.json, 'data/reservoirDataForMultiLine.json') //
-            .defer(d3.csv, 'data/datadictionary.csv') // datadictionary data
-            .defer(d3.csv, 'data/usco2010.csv') // usco2010 data
+            .defer(d3.json, 'data/reservoirData_processed.json') //
+            .defer(d3.csv, 'data/json_csv/datadictionary2.csv') // datadictionary data
+            .defer(d3.csv, 'data/json_csv/usco2010.csv') // usco2010 data
+            //.defer(d3.json, 'data/sankeyData_processed.json') //
+
             .await(dataLoaded) // calling function
     }
 
