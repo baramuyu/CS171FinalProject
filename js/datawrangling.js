@@ -75,10 +75,12 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 				tmp.push(d.Use)
 			if(tmp.indexOf(d.UseDetail) == -1 && d.UseDetail != "")
 				tmp.push(d.UseDetail)
-			if(tmp.indexOf(d.UseDetail2) == -1 && d.UseDetail2 != "")
-				tmp.push(d.UseDetail2)
+			// if(tmp.indexOf(d.UseDetail2) == -1 && d.UseDetail2 != "")
+			// tmp.push(d.UseDetail2)
 	})
-	tmp.push("Sprinkler", "Micro Irrigation", "Surface Flood"); //for level 5
+	tmp.push("Crop - Sprinkler", "Crop - Micro Irrigation", "Crop - Surface Flood"); //for level 5
+
+	debugger;
 
 	//make nodes format for sankey 
 	nodes = tmp.map(function(d){
@@ -97,68 +99,72 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 		links.forEach(function(e){
 
 			//aggregate when source and target are duplicate
-			if(e.source == d.Source && e.target == d.Type){
-				e.value += agUsageData[d.ColumnTag];
-				aggrFlg = true;
+			if(d.Source != "N/A" && d.Type != "N/A"){
+				if(e.source == d.Source && e.target == d.Type){
+					e.value += agUsageData[d.ColumnTag];
+					aggrFlg = true;
+				}
 			}
 		})
 		if(!aggrFlg && d.Source != "" && d.Type != ""){
 			links.push({
 				"source": d.Source,
 				"target": d.Type,
-				"value": (d.Source.substring(0,3) != "N/A" && d.Type.substring(0,3) != "N/A") ? agUsageData[d.ColumnTag] : 1
+				"value": (d.Source != "N/A" && d.Type != "N/A") ? agUsageData[d.ColumnTag] : 1
 			})
 		}
 
 		//Level 2-3(type to use)
 		aggrFlg = false; //initialize flag
 		links.forEach(function(e){
-			if(e.source == d.Type && e.target == d.Use){
-				e.value += agUsageData[d.ColumnTag];
-				aggrFlg = true;
+			if(d.Type != "N/A" && d.Use != "N/A"){
+				if(e.source == d.Type && e.target == d.Use){
+					e.value += agUsageData[d.ColumnTag];
+					aggrFlg = true;
+				}
 			}
 		})
 		if(!aggrFlg && d.Type != "" && d.Use != ""){
 			links.push({
 				"source": d.Type,
 				"target": d.Use ,
-				"value":  (d.Type.substring(0,3) != "N/A" && d.Use.substring(0,3) != "N/A") ? agUsageData[d.ColumnTag] : 1
+				"value":  (d.Type != "N/A" && d.Use != "N/A") ? agUsageData[d.ColumnTag] : 1
 			})
 		}
 
 		//Level 3-4(use to use detail)
 		aggrFlg = false; //initialize
 		links.forEach(function(e){
-			if(e.source == d.Use && e.target == d.UseDetail){
-				e.value += agUsageData[d.ColumnTag];
-				aggrFlg = true;
+			if(d.Use != "N/A" && d.UseDetail != "N/A"){
+				if(e.source == d.Use && e.target == d.UseDetail){
+					e.value += agUsageData[d.ColumnTag];
+					aggrFlg = true;
+				}
 			}
 		})
 		if(!aggrFlg && d.Use != "" && d.UseDetail != ""){
 			links.push({
 				"source": d.Use,
 				"target": d.UseDetail ,
-				"value":  (d.Use.substring(0,3) != "N/A" && d.UseDetail.substring(0,3) != "N/A") ? agUsageData[d.ColumnTag] : 1
-			})
-		}
-		//Level 4-5(use detail to use detail2)
-		if(!aggrFlg && d.UseDetail != "" && d.UseDetail2 != ""){
-			links.push({
-				"source": d.UseDetail,
-				"target": d.UseDetail2 ,
-				"value":  (d.UseDetail.substring(0,3) != "N/A" && d.UseDetail2.substring(0,3) != "N/A") ? agUsageData[d.ColumnTag] : 1
+				"value":  (d.Use != "N/A" && d.UseDetail != "N/A") ? agUsageData[d.ColumnTag] : 1
 			})
 		}
 
 	})
 
 	//ColumnUse="s" only
+	var cropTotal = 0;
+	colLevel5.forEach(function(d){
+		cropTotal += agUsageData[d.ColumnTag]
+	})
+	console.log(cropTotal)
+	debugger;
 
 	colLevel5.forEach(function(d){
 		links.push({
 			"source": d.UseDetail,
 			"target": d.UseDetail2,
-			"value": agUsageData[d.ColumnTag]
+			"value": 23056 * (agUsageData[d.ColumnTag] / cropTotal)
 		})
 	})
 

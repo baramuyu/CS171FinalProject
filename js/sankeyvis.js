@@ -6,8 +6,8 @@ SankeyVis.createSankey = function(graph){
 	var units = "Mgal";
 	 
 	var margin = {top: 10, right: 10, bottom: 10, left: 10},
-	    width = 1500 - margin.left - margin.right,
-	    height = 1040 - margin.top - margin.bottom;
+	    width = 1200 - margin.left - margin.right,
+	    height = 740 - margin.top - margin.bottom;
 	 
 	var formatNumber = d3.format(",.0f"),    // zero decimal places
 	    format = function(d) { return formatNumber(d) + " " + units; },
@@ -52,7 +52,7 @@ SankeyVis.createSankey = function(graph){
 	  .attr("d", path)
 	  .style("stroke-width", function(d) { return Math.max(1, d.dy); })
 	  .sort(function(a, b) { return b.dy - a.dy; })
-	  //.style("opacity", function(d){ return (d.source.name == "N/A" || d.target.name == "N/A") ? 0 : 1 }); //make N/A transparent
+	  .style("opacity", function(d){ return (d.source.name == "N/A" || d.target.name == "N/A") ? 0 : 1 }); //make N/A transparent
 
 	// add the link titles
 	link.append("title")
@@ -81,7 +81,7 @@ SankeyVis.createSankey = function(graph){
 		  return d.color = color(d.name.replace(/ .*/, "")); })
 	  .style("stroke", function(d) { 
 		  return d3.rgb(d.color).darker(2); })
-	  //.style("opacity", function(d){ return (d.name == "N/A" || d.name == "N/A") ? 0 : 1 }) //make N/A transparent
+	  .style("opacity", function(d){ return (d.name == "N/A" || d.name == "N/A") ? 0 : 1 }) //make N/A transparent
 
 	.append("title")
 	  .text(function(d) { 
@@ -95,7 +95,7 @@ SankeyVis.createSankey = function(graph){
 	  .attr("text-anchor", "end")
 	  .attr("transform", null)
 	  .text(function(d) { return d.name; })
-	  //.style("opacity", function(d){ return (d.name == "N/A" || d.name == "N/A") ? 0 : 1 }) //make N/A transparent
+	  .style("opacity", function(d){ return (d.name == "N/A" || d.name == "N/A") ? 0 : 1 }) //make N/A transparent
 	.filter(function(d) { return d.x < width / 2; })
 	  .attr("x", 6 + sankey.nodeWidth())
 	  .attr("text-anchor", "start");
