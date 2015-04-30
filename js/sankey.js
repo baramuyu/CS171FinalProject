@@ -112,11 +112,14 @@ d3.sankey = function() {
         nextNodes,
         x = 0;
  
+<<<<<<< HEAD
     if(isNaN(remainingNodes.length)){
       console.log("sankey error")
       return null;
     }
 
+=======
+>>>>>>> 23e96fea2d98a6eea75d4d49ab209f641451c22b
     while (remainingNodes.length) {
       nextNodes = [];
       remainingNodes.forEach(function(node) {

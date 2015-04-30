@@ -87,12 +87,16 @@ $(function(){ // this function is called after the HTML document is fully loaded
     }
 
     // call this function after both files are loaded -- error should be "null" if no error
-    var dataLoaded = function (error, _resData, _dicData, _usageData) {
+    var dataLoaded = function (error, _resData, _usageData) {
         if (!error) {
 
             //***data wrangling***
             //resData = Wrangling.resDataWrang(_resData);
+<<<<<<< HEAD:index.html
             usageData = Wrangling.usageDataWrang(_usageData, _dicData)
+=======
+            //usageData = Wrangling.usageDataWrang(_usageData, _dicData)
+>>>>>>> 23e96fea2d98a6eea75d4d49ab209f641451c22b:index.html
             
             //multipule line chart
             resDataTop20 = MultiLineVis.PickTop20(_resData);
@@ -102,7 +106,11 @@ $(function(){ // this function is called after the HTML document is fully loaded
             StackedBarVis.createStackBar(_resData);
 
             //sankey chart
+<<<<<<< HEAD:index.html
             SankeyVis.createSankey(usageData);
+=======
+            SankeyVis.createSankey(_usageData);
+>>>>>>> 23e96fea2d98a6eea75d4d49ab209f641451c22b:index.html
 
         }
     }
@@ -114,9 +122,15 @@ $(function(){ // this function is called after the HTML document is fully loaded
             //.defer(d3.json, 'data/reservoir.json') // reservoir　data
             //.defer(d3.json, 'data/storage.json') // reservoir　data
             .defer(d3.json, 'data/reservoirData_processed.json') //
+<<<<<<< HEAD:index.html
             .defer(d3.csv, 'data/json_csv/datadictionary3.csv') // datadictionary data
             .defer(d3.csv, 'data/json_csv/usco2010.csv') // usco2010 data
             //.defer(d3.json, 'data/sankeyData_processed.json') //
+=======
+            //.defer(d3.csv, 'data/datadictionary.csv') // datadictionary data
+            //.defer(d3.csv, 'data/usco2010.csv') // usco2010 data
+            .defer(d3.json, 'data/sankeyData_processed.json') //
+>>>>>>> 23e96fea2d98a6eea75d4d49ab209f641451c22b:index.html
 
             .await(dataLoaded) // calling function
     }
