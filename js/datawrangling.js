@@ -4,11 +4,25 @@ Wrangling = function(){
 Wrangling.resDataWrang = function(_resData){
 	var resData = [];
 
+	var totalCapacity = 0;
+	_resData.forEach(function(d){
+		if(!isNaN(d.Capacity))
+			totalCapacity += +d.Capacity
+	})
+
+	var objTotal = [];
     _resData.forEach(function(d){
 
     	stoData = [];
 		for (var date in d.Storage ) {
 			stoData.push({
+				date: date,
+				storage: d.Storage[date],
+				percentage: d3.round(d.Storage[date] / d.Capacity, 4) * 100
+			})
+
+			//for total
+			objTotal.push({
 				date: date,
 				storage: d.Storage[date]
 			})
@@ -22,11 +36,48 @@ Wrangling.resDataWrang = function(_resData){
     			values: stoData
     	})
     })
-    console.log("RESDATA",resData)
 
-    this.saveToFile(resData,"reservoirDataForMultiLine.json")
+    //objTotal has storage data with all dates for all reservoir
+    //aggregate storage data by each date and push to totalSto object 
+    var totalSto = [];
+    var addflg = false;
+    objTotal.forEach(function(d){
+    	totalSto.forEach(function(e){
+    		if(e.date==d.date){
+    			e.storage += d.storage;
+    			addflg = true;
+    		}
+    	})
+    	if(addflg==false){
+    		totalSto.push({
+    			date: d.date,
+    			storage: d.storage,
+    			percentage: 0
 
-    return resData
+    		})
+    	}
+    })
+
+    //calculate percentage
+    totalSto.forEach(function(d){
+    	d.percentage = d3.round(d.storage / totalCapacity, 4) * 100
+    })
+
+    //make one data for All reservoir
+	resData.push({
+		name: "All Reservoir",
+	    capacity: totalCapacity,
+	    latitude: 0,
+	    longitude: 0,
+		values: totalSto
+	})   
+
+
+    console.log("RESDATA,",resData)
+
+    this.saveToFile(resData,"reservoirData_processed.json")
+
+    return resData;
 }
 
 
@@ -158,7 +209,6 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 		cropTotal += agUsageData[d.ColumnTag]
 	})
 	console.log(cropTotal)
-	debugger;
 
 	colLevel5.forEach(function(d){
 		links.push({
@@ -186,9 +236,9 @@ Wrangling.usageDataWrang = function(_usageData, _dicData){
 	
 
 	//Export files
-	//this.saveToFile(agUsageData,"aggregatedUsageData.json")
-	//this.saveToFile(colList,"dictionaryData.json")
-	//this.saveToFile(result,"sankeyData.json")
+	//this.saveToFile(agUsageData,"aggregatedUsageData_processed.json")
+	//this.saveToFile(colList,"dictionaryData_processed.json")
+	//this.saveToFile(result,"sankeyData_processed.json")
 
 	return result;
 }

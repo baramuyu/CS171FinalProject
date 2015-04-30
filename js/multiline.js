@@ -3,7 +3,7 @@ MultiLineVis = function(_parentElement){
     this.parentElement = _parentElement;
 }
 
-MultiLineVis.PickTop20 = function(_resData){
+MultiLineVis.PickTop10 = function(_resData){
     var data = _resData;
     var res = [];
     var count = 0;
@@ -20,8 +20,20 @@ MultiLineVis.PickTop20 = function(_resData){
     return res;
 }
 
-MultiLineVis.createMultiLine = function(_resData){
-    var data = _resData
+MultiLineVis.calCapacity = function(data){
+  var totalCap = 0;
+  data.forEach(function(d){
+      if(!isNaN(d.capacity))
+          totalCap += +d.capacity;
+  })
+  console.log("totalCap,", totalCap)
+
+  return totalCap;
+}
+
+MultiLineVis.createMultiLine = function(_resData, _allData){
+    var data = _resData;
+    var alldata = _allData;
 
     var margin = {top: 20, right: 200, bottom: 30, left: 100},
         width = 1160 - margin.left - margin.right,
@@ -44,6 +56,8 @@ MultiLineVis.createMultiLine = function(_resData){
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left");
+    //calculate total capacity
+    var totalCapacity = this.calCapacity(alldata);
 
     var line = d3.svg.line()
         .interpolate("basis")
@@ -56,8 +70,10 @@ MultiLineVis.createMultiLine = function(_resData){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
+      //x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
+      x.domain([parseDate("20000104"),parseDate("20140916")]);
 
+//      y.domain([0,100]);
       y.domain([
         d3.min(data, function(c) { return d3.min(c.values, function(v) { return v.storage; }); }),
         d3.max(data, function(c) { return d3.max(c.values, function(v) { return v.storage; }); })
@@ -76,7 +92,7 @@ MultiLineVis.createMultiLine = function(_resData){
           .attr("y", 6)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
-          .text("Storage(Mgal?)");
+          .text("Storage(%)");
 
       var city = svg.selectAll(".city")
           .data(data)

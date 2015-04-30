@@ -87,22 +87,23 @@ $(function(){ // this function is called after the HTML document is fully loaded
     }
 
     // call this function after both files are loaded -- error should be "null" if no error
-    var dataLoaded = function (error, _resData, _dicData, _usageData) {
+    //var dataLoaded = function (error, _resData, _dicData, _usageData) {
+    var dataLoaded = function (error, _resData, _usageData) {
         if (!error) {
 
             //***data wrangling***
             //resData = Wrangling.resDataWrang(_resData);
-            usageData = Wrangling.usageDataWrang(_usageData, _dicData)
+            //usageData = Wrangling.usageDataWrang(_usageData, _dicData)
             
             //multipule line chart
-            resDataTop20 = MultiLineVis.PickTop20(_resData);
-            MultiLineVis.createMultiLine(resDataTop20);
+             resDataTop10 = MultiLineVis.PickTop10(_resData);
+             MultiLineVis.createMultiLine(resDataTop10, _resData);
 
             //stacked bar chart
-            StackedBarVis.createStackBar(_resData);
+            //StackedBarVis.createStackBar(_resData);
 
             //sankey chart
-            SankeyVis.createSankey(usageData);
+            SankeyVis.createSankey(_usageData);
 
         }
     }
@@ -111,12 +112,12 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
         // Hint: http://giscollective.org/d3-queue-js/
         queue()
-            //.defer(d3.json, 'data/reservoir.json') // reservoir　data
+            //.defer(d3.json, 'data/json_csv/reservoir.json') // reservoir　data
             //.defer(d3.json, 'data/storage.json') // reservoir　data
-            .defer(d3.json, 'data/reservoirData_processed.json') //
-            .defer(d3.csv, 'data/json_csv/datadictionary4.csv') // datadictionary data
-            .defer(d3.csv, 'data/json_csv/usco2010.csv') // usco2010 data
-            //.defer(d3.json, 'data/sankeyData_processed.json') //
+            .defer(d3.json, 'data/reservoirData_processed2.json') //
+            //.defer(d3.csv, 'data/json_csv/datadictionary4.csv') // datadictionary data
+            //.defer(d3.csv, 'data/json_csv/usco2010.csv') // usco2010 data
+            .defer(d3.json, 'data/sankeyData_processed.json') //
 
             .await(dataLoaded) // calling function
     }

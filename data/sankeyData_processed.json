@@ -10,6 +10,9 @@
 			"name": "Public Supply"
 		},
 		{
+			"name": "N/A"
+		},
+		{
 			"name": "Saline"
 		},
 		{
@@ -23,9 +26,6 @@
 		},
 		{
 			"name": "Irrigation"
-		},
-		{
-			"name": "Irrigation-Crop"
 		},
 		{
 			"name": "Irrigation Golf"
@@ -47,23 +47,37 @@
 		},
 		{
 			"name": "Thermoelectric recirculation"
+		},
+		{
+			"name": "Crop - Sprinkler"
+		},
+		{
+			"name": "Crop - Micro Irrigation"
+		},
+		{
+			"name": "Crop - Surface Flood"
 		}
 	],
 	"links": [
 		{
 			"source": "Ground",
 			"target": "Fresh",
-			"value": 2742.200000000001
+			"value": 12282.81
 		},
 		{
 			"source": "Fresh",
 			"target": "Public Supply",
-			"value": 2742.200000000001
+			"value": 6214.43
+		},
+		{
+			"source": "Public Supply",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Ground",
 			"target": "Saline",
-			"value": 84.29
+			"value": 368.74
 		},
 		{
 			"source": "Saline",
@@ -71,59 +85,54 @@
 			"value": 84.29
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 3472.2299999999996
+			"source": "Public Supply",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Public Supply",
-			"value": 3472.2299999999996
+			"source": "Surface",
+			"target": "Fresh",
+			"value": 18823.289999999994
+		},
+		{
+			"source": "Public Supply",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Surface",
 			"target": "Saline",
-			"value": 0
+			"value": 6487.339999999999
 		},
 		{
-			"source": "Saline",
-			"target": "Public Supply",
-			"value": 0
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 142.47000000000003
+			"source": "Public Supply",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Domestic",
-			"value": 142.47000000000003
+			"value": 171.92000000000002
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 29.44999999999999
+			"source": "Domestic",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Domestic",
-			"value": 29.44999999999999
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 399.2699999999999
+			"source": "Domestic",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Industrial",
-			"value": 399.2699999999999
+			"value": 400.3999999999999
 		},
 		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 0
+			"source": "Industrial",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Saline",
@@ -131,119 +140,64 @@
 			"value": 0
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 1.1300000000000001
+			"source": "Industrial",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Industrial",
-			"value": 1.1300000000000001
+			"source": "Industrial",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 0
-		},
-		{
-			"source": "Saline",
-			"target": "Industrial",
-			"value": 0
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 8685.98
+			"source": "Industrial",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Irrigation",
-			"value": 8685.98
+			"value": 23056.489999999994
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 14370.509999999995
+			"source": "Irrigation",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Irrigation",
-			"value": 14370.509999999995
+			"source": "Irrigation",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 8553.369999999999
-		},
-		{
-			"source": "Fresh",
-			"target": "Irrigation-Crop",
-			"value": 8553.369999999999
-		},
-		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 14290.059999999992
-		},
-		{
-			"source": "Fresh",
-			"target": "Irrigation-Crop",
-			"value": 14290.059999999992
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 132.61000000000004
-		},
-		{
-			"source": "Fresh",
+			"source": "Irrigation",
 			"target": "Irrigation Golf",
-			"value": 132.61000000000004
-		},
-		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 80.44999999999996
-		},
-		{
-			"source": "Fresh",
-			"target": "Irrigation Golf",
-			"value": 80.44999999999996
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 84.41
+			"value": 213.06
 		},
 		{
 			"source": "Fresh",
 			"target": "Livestock",
-			"value": 84.41
+			"value": 187.79
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 103.38
+			"source": "Livestock",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Livestock",
-			"value": 103.38
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 171.22000000000003
+			"source": "Livestock",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Aquaculture",
-			"value": 171.22000000000003
+			"value": 973.3399999999999
 		},
 		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 0
+			"source": "Aquaculture",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Saline",
@@ -251,184 +205,84 @@
 			"value": 0
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 802.1199999999999
+			"source": "Aquaculture",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Aquaculture",
-			"value": 802.1199999999999
+			"source": "Aquaculture",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 0
-		},
-		{
-			"source": "Saline",
-			"target": "Aquaculture",
-			"value": 0
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 24.119999999999994
+			"source": "Aquaculture",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Mining",
-			"value": 24.119999999999994
+			"value": 36.36999999999999
 		},
 		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 236.00000000000003
-		},
-		{
-			"source": "Saline",
-			"target": "Mining",
-			"value": 236.00000000000003
-		},
-		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 12.25
-		},
-		{
-			"source": "Fresh",
-			"target": "Mining",
-			"value": 12.25
-		},
-		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 0.05
+			"source": "Mining",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Saline",
 			"target": "Mining",
-			"value": 0.05
+			"value": 236.05000000000004
 		},
 		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 33.14
+			"source": "Mining",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Fresh",
-			"target": "Thermoelectric",
-			"value": 33.14
+			"source": "Mining",
+			"target": "N/A",
+			"value": 1
 		},
 		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 48.45
-		},
-		{
-			"source": "Saline",
-			"target": "Thermoelectric",
-			"value": 48.45
-		},
-		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 32.22
+			"source": "Mining",
+			"target": "N/A",
+			"value": 1
 		},
 		{
 			"source": "Fresh",
 			"target": "Thermoelectric",
-			"value": 32.22
+			"value": 65.36000000000001
 		},
 		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 6487.29
+			"source": "Thermoelectric",
+			"target": "Thermoelectric once-through",
+			"value": 6486.979999999999
 		},
 		{
 			"source": "Saline",
 			"target": "Thermoelectric",
-			"value": 6487.29
+			"value": 6535.739999999999
 		},
 		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 0.73
-		},
-		{
-			"source": "Fresh",
-			"target": "Thermoelectric once-through",
-			"value": 0.73
-		},
-		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 0
-		},
-		{
-			"source": "Saline",
-			"target": "Thermoelectric once-through",
-			"value": 0
-		},
-		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 0
-		},
-		{
-			"source": "Fresh",
-			"target": "Thermoelectric once-through",
-			"value": 0
-		},
-		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 6486.249999999999
-		},
-		{
-			"source": "Saline",
-			"target": "Thermoelectric once-through",
-			"value": 6486.249999999999
-		},
-		{
-			"source": "Ground",
-			"target": "Fresh",
-			"value": 32.41000000000001
-		},
-		{
-			"source": "Fresh",
+			"source": "Thermoelectric",
 			"target": "Thermoelectric recirculation",
-			"value": 32.41000000000001
+			"value": 114.12000000000002
 		},
 		{
-			"source": "Ground",
-			"target": "Saline",
-			"value": 48.45
+			"source": "Irrigation",
+			"target": "Crop - Sprinkler",
+			"value": 3822.974089870645
 		},
 		{
-			"source": "Saline",
-			"target": "Thermoelectric recirculation",
-			"value": 48.45
+			"source": "Irrigation",
+			"target": "Crop - Micro Irrigation",
+			"value": 6500.685140856602
 		},
 		{
-			"source": "Surface",
-			"target": "Fresh",
-			"value": 32.22
-		},
-		{
-			"source": "Fresh",
-			"target": "Thermoelectric recirculation",
-			"value": 32.22
-		},
-		{
-			"source": "Surface",
-			"target": "Saline",
-			"value": 1.04
-		},
-		{
-			"source": "Saline",
-			"target": "Thermoelectric recirculation",
-			"value": 1.04
+			"source": "Irrigation",
+			"target": "Crop - Surface Flood",
+			"value": 12732.340769272754
 		}
 	]
 }
