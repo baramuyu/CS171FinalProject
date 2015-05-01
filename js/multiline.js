@@ -116,10 +116,6 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
       d3.select("#L_ALL").style("opacity", 1)
 
     //create slide bar
-    var svg_bar = d3.select("#multiLineVis")
-                      .append("svg")
-                      .attr("width", 970)
-                      .attr("height",500)
     this.addSlider(svg);
 
 }
@@ -154,10 +150,8 @@ MultiLineVis.prototype.addSlider = function(svg){
         var sliderValue = sliderScale.invert(value);
         var selectValue = x.invert(value);
 
-        d3.select(this)
-            .attr("x", function () {
-                return sliderScale(sliderValue);
-            })
+        d3.select(".sliderHandle").attr("x", function () { return sliderScale(sliderValue); })
+        d3.select(".sliderHandle-bg").attr("x", function () { return sliderScale(sliderValue) - 20; })
 
         //change multi line chart
         $(that.eventHandler).trigger("dateChanged",selectValue);   
@@ -178,20 +172,32 @@ MultiLineVis.prototype.addSlider = function(svg){
         height:480
     }).style({
         fill:"lightgray",
-        opacity:"0.1"
+        opacity:0.1
     })
+    
+    sliderGroup.append("rect").attr({
+            "class":"sliderHandle-bg",
+            x:sliderScale(1)-20,
+            width:40,
+            height:480,
+            rx:2,
+            ry:2
+        }).style({
+        opacity: 0
+    }).call(sliderDragBehaviour)
+
 
     sliderGroup.append("rect").attr({
         "class":"sliderHandle",
         x:sliderScale(1),
-        width:20,
+        width:10,
         height:480,
         rx:2,
         ry:2
     }).style({
-        fill:"#333333",
-        opacity: 0.4
-    }).call(sliderDragBehaviour)
+        fill:"red",
+        opacity: 0.3
+    })
 
 
 }
