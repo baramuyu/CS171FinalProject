@@ -1,11 +1,16 @@
-StackedBarVis = function(_eventHandler){
+StackedBarVis = function(_eventHandler, _color){
     this.eventHandler = _eventHandler;
+    this.color = _color;
 }
 
-StackedBarVis.prototype.reformatData = function(data){
-    var filData = data.filter(function(d){
+StackedBarVis.prototype.filterData = function(_data){
+    return _data.filter(function(d){
         return d.name != "All Reservoir";
     })
+}    
+
+StackedBarVis.prototype.reformatData = function(_data){
+    filData = _data;
 
     //Data wrangling
     var y0 = 0;
@@ -98,8 +103,6 @@ StackedBarVis.prototype.createStackBar = function(_resData){
     var y = d3.scale.linear()
         .rangeRound([height, 0]);
 
-    var color = d3.scale.category20()
-
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
@@ -116,11 +119,12 @@ StackedBarVis.prototype.createStackBar = function(_resData){
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
       //Data filtering - remove "All reservoir"
-      var data = this.reformatData(oldData);
+      var filData = this.filterData(oldData)
+      var data = this.reformatData(filData);
 
       //total capacity
       var totalCap = 0;
-      oldData.map(function(d) {
+      filData.map(function(d) {
           if(!isNaN(d.capacity))
               totalCap += +d.capacity;
       })
@@ -158,7 +162,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           .attr("y", function(d) { return y(d.y1); 
           })
           .attr("height", function(d) {return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
-          .style("fill", function(d) { return color(d.name); })
+          .style("fill", function(d) { return that.color(d.id); })
           .attr("class","stuckbar")
           .attr("id", function(d,i){ return d.id })
           .on("mouseenter",function(d,i){ 

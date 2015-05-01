@@ -1,5 +1,6 @@
 
-MultiLineVis = function(){
+MultiLineVis = function(_color){
+  this.color = _color;
 }
 
 MultiLineVis.prototype.PickTop10 = function(_resData){
@@ -32,6 +33,7 @@ MultiLineVis.prototype.calCapacity = function(data){
 MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
     //this.data = _resData;
     this.data = _allData;
+    var that = this;
 
     var margin = {top: 20, right: 200, bottom: 30, left: 100},
         width = 1160 - margin.left - margin.right,
@@ -45,7 +47,7 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
     var y = d3.scale.linear()
         .range([height, 0]);
 
-    var color = d3.scale.category10();
+    this.y = y;
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -98,7 +100,7 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
       lake.append("path")
           .attr("class", "line")
           .attr("d", function(d) { return line(d.values); })
-          .style("stroke", function(d) { return color(d.name); });
+          .style("stroke", function(d) { return that.color(d.id); });
 
       lake.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
@@ -107,7 +109,13 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
           .attr("dy", ".35em")
           .text(function(d) { return d.name; });
 
+      //Always All Reservoir is shown
       d3.select("#L_ALL").style("opacity", 1)
+
+      //Slider
+      var svg_bar = d3.select("#multiLineVis").append("svg").attr("width", 200).attr("height",300)
+      this.addSlider(svg_bar);
+
 }
 
 MultiLineVis.prototype.updateMultiLine = function(_barId){
@@ -124,4 +132,58 @@ MultiLineVis.prototype.updateMultiLine = function(_barId){
 
 MultiLineVis.prototype.barSelected = function(_barId){
     this.updateMultiLine(_barId)
+}
+
+MultiLineVis.prototype.addSlider = function(svg){
+    var that = this;
+
+    // TODO: Think of what is domain and what is range for the y axis slider !!
+    var sliderScale = d3.scale.linear().domain([1,.1]).range([200,0])
+
+    var sliderDragged = function(){
+        var value = Math.max(0, Math.min(200,d3.event.y));
+
+        var sliderValue = sliderScale.invert(value);
+
+        // TODO: do something here to deform the y scale
+        //this.y.exponent(sliderValue);
+        console.log(sliderValue)
+
+
+        d3.select(this)
+            .attr("y", function () {
+                return sliderScale(sliderValue);
+            })
+
+        //that.updateVis({});
+    }
+    var sliderDragBehaviour = d3.behavior.drag()
+        .on("drag", sliderDragged)
+
+    var sliderGroup = svg.append("g").attr({
+        class:"sliderGroup",
+        "transform":"translate("+0+","+30+")"
+    })
+
+    sliderGroup.append("rect").attr({
+        class:"sliderBg",
+        x:5,
+        width:10,
+        height:200
+    }).style({
+        fill:"lightgray"
+    })
+
+    sliderGroup.append("rect").attr({
+        "class":"sliderHandle",
+        y:sliderScale(1),
+        width:20,
+        height:10,
+        rx:2,
+        ry:2
+    }).style({
+        fill:"#333333"
+    }).call(sliderDragBehaviour)
+
+
 }
