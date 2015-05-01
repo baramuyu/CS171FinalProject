@@ -69,8 +69,6 @@ $(function(){ // this function is called after the HTML document is fully loaded
         //***Data Wrangling
         Wrangling = new Wrangling();
 
-        // $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
-        // });
         $(MyEventHandler).bind("barSelected", function(event, barId){
             MultiLineVis.barSelected(barId)
         });

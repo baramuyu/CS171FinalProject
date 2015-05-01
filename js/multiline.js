@@ -30,8 +30,8 @@ MultiLineVis.prototype.calCapacity = function(data){
 }
 
 MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
-    var data = _resData;
-    var alldata = _allData;
+    //this.data = _resData;
+    this.data = _allData;
 
     var margin = {top: 20, right: 200, bottom: 30, left: 100},
         width = 1160 - margin.left - margin.right,
@@ -55,7 +55,7 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
         .scale(y)
         .orient("left");
     //calculate total capacity
-    var totalCapacity = this.calCapacity(alldata);
+    var totalCapacity = this.calCapacity(this.data);
 
     var line = d3.svg.line()
         .interpolate("basis")
@@ -88,30 +88,40 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
           .style("text-anchor", "end")
           .text("Storage(%)");
 
-      var city = svg.selectAll(".city")
-          .data(data)
+      var lake = svg.selectAll(".lake")
+          .data(this.data)
         .enter().append("g")
-          .attr("class", "city");
+          .attr("class", "lake")
+          .attr("id", function(d){return "L_"+d.id})
+          .attr("opacity", 0);
 
-      city.append("path")
+      lake.append("path")
           .attr("class", "line")
           .attr("d", function(d) { return line(d.values); })
           .style("stroke", function(d) { return color(d.name); });
 
-      city.append("text")
+      lake.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
           .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.percentage) + ")"; })
           .attr("x", 3)
           .attr("dy", ".35em")
           .text(function(d) { return d.name; });
 
+      d3.select("#L_ALL").style("opacity", 1)
 }
 
-MultiLineVis.prototype.updateMultiLine = function(_resData, _allData){
+MultiLineVis.prototype.updateMultiLine = function(_barId){
+    barId = _barId;
+    console.log("bar secected!", barId);
 
+    d3.selectAll(".lake").style("opacity", 0)  
+    d3.select("#L_ALL").style("opacity", 1)
+
+    if(barId != ""){
+        d3.select("#L_"+barId).style("opacity", 1)
+    }
 }
 
 MultiLineVis.prototype.barSelected = function(_barId){
-    barId = _barId 
-    console.log("bar secected!", barId)
+    this.updateMultiLine(_barId)
 }

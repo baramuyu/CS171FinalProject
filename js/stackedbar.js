@@ -2,10 +2,85 @@ StackedBarVis = function(_eventHandler){
     this.eventHandler = _eventHandler;
 }
 
-StackedBarVis.prototype.filterData = function(data){
-    return data.filter(function(d){
+StackedBarVis.prototype.reformatData = function(data){
+    var filData = data.filter(function(d){
         return d.name != "All Reservoir";
     })
+
+    //Data wrangling
+    var y0 = 0;
+    var y1 = 0;
+    data = 
+    [{
+        state: "Storage on mm/dd/yyyy",
+        storages: filData.map(function(d) {
+                      var latestData = d.values.length - 1;
+                      return {
+                          "name": d.name,
+                          "id": d.id,
+                          "y0": 0, //temporary
+                          "y1": 0, //temporary
+                          "value": +d.values[latestData].storage,
+                          "capacity": +d.capacity
+                      }
+                  }),
+        total: 0 //temporary
+    },
+    {
+        state: "Storage Capacity",
+        storages: filData.map(function(d) {
+                      var latestData = d.values.length - 1;
+                      return {
+                          "name": d.name,
+                          "id": d.id,
+                          "y0": 0, //temporary
+                          "y1": 0, //temporary
+                          "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
+                      }
+                  }),
+        total: 0 //temporary
+    }]
+
+     //sorting
+    data[0].storages = data[0].storages.sort(function(a, b){
+        return d3.descending(a["capacity"], b["capacity"]);
+    })
+    data[1].storages = data[1].storages.sort(function(a, b){
+        return d3.descending(a["capacity"], b["capacity"]);
+    })
+
+    //Current
+    //update y0,y1
+    var y0 = 0;
+    var y1 = 0;
+    //current storage
+    data[0].storages.map(function(d){
+        y0 = y1;
+        y1 = y0 + d.value;
+        d.y0 = y0;
+        d.y1 = y1;
+    })
+
+    //update total
+    data[0].total = y1;
+
+    //Capaity
+    //update y0,y1
+    var y0 = 0;
+    var y1 = 0;
+    //current storage
+    data[1].storages.map(function(d){
+        y0 = y1;
+        y1 = y0 + d.capacity;
+        d.y0 = y0;
+        d.y1 = y1;
+    })
+
+    //update total
+    data[1].total = y1;
+
+    return data;
+
 }
 
 StackedBarVis.prototype.createStackBar = function(_resData){
@@ -40,81 +115,8 @@ StackedBarVis.prototype.createStackBar = function(_resData){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      //Data filtering
-      oldData = this.filterData(oldData);
-
-      //Data wrangling
-      var y0 = 0;
-      var y1 = 0;
-      data = 
-      [{
-          state: "Storage on mm/dd/yyyy",
-          storages: oldData.map(function(d) {
-                        var latestData = d.values.length - 1;
-                        return {
-                            "name": d.name,
-                            "id": d.id,
-                            "y0": 0, //temporary
-                            "y1": 0, //temporary
-                            "value": +d.values[latestData].storage,
-                            "capacity": +d.capacity
-                        }
-                    }),
-          total: 0 //temporary
-      },
-      {
-          state: "Storage Capacity",
-          storages: oldData.map(function(d) {
-                        var latestData = d.values.length - 1;
-                        return {
-                            "name": d.name,
-                            "id": d.id,
-                            "y0": 0, //temporary
-                            "y1": 0, //temporary
-                            "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
-                        }
-                    }),
-          total: 0 //temporary
-      }]
-
-       //sorting
-      data[0].storages = data[0].storages.sort(function(a, b){
-          return d3.descending(a["capacity"], b["capacity"]);
-      })
-      data[1].storages = data[1].storages.sort(function(a, b){
-          return d3.descending(a["capacity"], b["capacity"]);
-      })
-      
-      //Current
-      //update y0,y1
-      var y0 = 0;
-      var y1 = 0;
-      //current storage
-      data[0].storages.map(function(d){
-          y0 = y1;
-          y1 = y0 + d.value;
-          d.y0 = y0;
-          d.y1 = y1;
-      })
-
-      //update total
-      data[0].total = y1;
-
-      //Capaity
-      //update y0,y1
-      var y0 = 0;
-      var y1 = 0;
-      //current storage
-      data[1].storages.map(function(d){
-          y0 = y1;
-          y1 = y0 + d.capacity;
-          d.y0 = y0;
-          d.y1 = y1;
-      })
-
-      //update total
-      data[1].total = y1;
-
+      //Data filtering - remove "All reservoir"
+      var data = this.reformatData(oldData);
 
       //total capacity
       var totalCap = 0;
@@ -166,11 +168,13 @@ StackedBarVis.prototype.createStackBar = function(_resData){
               d3.select("#"+d.id).style("opacity", 1)
 
               //change multi line chart
-              $(that.eventHandler).trigger("barSelected",d.id);              
+              $(that.eventHandler).trigger("barSelected",d.id);      
               
           })
           .on("mouseleave",function(){
-              d3.selectAll(".stuckbar").style("opacity", 1)             
+              d3.selectAll(".stuckbar").style("opacity", 1)
+              //change multi line chart
+              $(that.eventHandler).trigger("barSelected","");        
           });
 
 }
