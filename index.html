@@ -8,14 +8,13 @@
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
-    <script src="libs/foundation/foundation.js"></script>
-    <script src="libs/foundation/foundation.slider.js"></script>
+    <script src="libs/queue.min.js"></script>
 
     <!--Stylesheets-->
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
 
     <!-- Get some nice font-->
-    <link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+    <!--<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>-->
 
     <!-- vis classes-->
     <script src = "js/multiline.js"></script>
@@ -23,7 +22,7 @@
     <script src = "js/stackedbar.js"></script>
     <script src = "js/sankey.js"></script>
     <script src = "js/sankeyvis.js"></script>
-    <script src="http://d3js.org/queue.v1.min.js"></script>
+    <!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
     <script src="libs/FileSaver.js"></script>
 
     <!-- stylesheet-->
@@ -40,20 +39,7 @@
         </div>
         <div class="row">
             <h3>Storage Changes Over Time  </h3>
-            <div class="row">
-              <div class="small-10 medium-11 columns">
-                <div class="range-slider" data-slider data-options="display_selector: #sliderOutput3;">
-                  <span class="range-slider-handle" role="slider" tabindex="0"></span>
-                  <span class="range-slider-active-segment"></span>
-                </div>
-              </div>
-              <div class="small-2 medium-1 columns">
-                <span id="sliderOutput3"></span>
-              </div>
-            </div>
-            <div class="col-md-1" id="multiLineVis">
-
-            </div>
+            <div class="col-md-1" id="multiLineVis"></div>
         </div>
         <div class="row">
             <h3>Water Withdraw Diagram </h3>
@@ -78,7 +64,7 @@ $(function(){ // this function is called after the HTML document is fully loaded
         var MyEventHandler = {};
         var color = d3.scale.category20();
 
-        MultiLineVis = new MultiLineVis(color);
+        MultiLineVis = new MultiLineVis(MyEventHandler,color);
         StackedBarVis = new StackedBarVis(MyEventHandler,color);
         SankeyVis = new SankeyVis();
       
@@ -87,6 +73,9 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
         $(MyEventHandler).bind("barSelected", function(event, barId){
             MultiLineVis.barSelected(barId)
+        });
+        $(MyEventHandler).bind("dateChanged", function(event, selDate){
+            StackedBarVis.dateChanged(selDate)
         });
     }
 
@@ -109,7 +98,7 @@ $(function(){ // this function is called after the HTML document is fully loaded
             StackedBarVis.createStackBar(_resData);
 
             //sankey chart
-            SankeyVis.createSankey(_usageData);
+            //SankeyVis.createSankey(_usageData);
         }
     }
 

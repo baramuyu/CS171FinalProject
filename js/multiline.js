@@ -1,6 +1,7 @@
 
-MultiLineVis = function(_color){
-  this.color = _color;
+MultiLineVis = function(_eventHandler, _color){
+    this.eventHandler = _eventHandler;
+    this.color = _color;
 }
 
 MultiLineVis.prototype.PickTop10 = function(_resData){
@@ -44,10 +45,12 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
     var x = d3.time.scale()
         .range([0, width]);
 
+    //save to "this"
+    this.x = x;
+    this.width = width;
+
     var y = d3.scale.linear()
         .range([height, 0]);
-
-    this.y = y;
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -112,9 +115,12 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
       //Always All Reservoir is shown
       d3.select("#L_ALL").style("opacity", 1)
 
-      //Slider
-      var svg_bar = d3.select("#multiLineVis").append("svg").attr("width", 200).attr("height",300)
-      this.addSlider(svg_bar);
+    //create slide bar
+    var svg_bar = d3.select("#multiLineVis")
+                      .append("svg")
+                      .attr("width", 970)
+                      .attr("height",500)
+    this.addSlider(svg);
 
 }
 
@@ -136,53 +142,55 @@ MultiLineVis.prototype.barSelected = function(_barId){
 
 MultiLineVis.prototype.addSlider = function(svg){
     var that = this;
+    var x = that.x;
+    var width = that.width; // I don't know why I can't use "that" inside of sliderDragged functionma
 
     // TODO: Think of what is domain and what is range for the y axis slider !!
-    var sliderScale = d3.scale.linear().domain([1,.1]).range([200,0])
+    var sliderScale = d3.scale.linear().domain([.1,1]).range([0,width])
 
     var sliderDragged = function(){
-        var value = Math.max(0, Math.min(200,d3.event.y));
+        var value = Math.max(0, Math.min(width,d3.event.x));
 
         var sliderValue = sliderScale.invert(value);
-
-        // TODO: do something here to deform the y scale
-        //this.y.exponent(sliderValue);
-        console.log(sliderValue)
-
+        var selectValue = x.invert(value);
 
         d3.select(this)
-            .attr("y", function () {
+            .attr("x", function () {
                 return sliderScale(sliderValue);
             })
 
-        //that.updateVis({});
+        //change multi line chart
+        $(that.eventHandler).trigger("dateChanged",selectValue);   
+
     }
     var sliderDragBehaviour = d3.behavior.drag()
         .on("drag", sliderDragged)
 
     var sliderGroup = svg.append("g").attr({
         class:"sliderGroup",
-        "transform":"translate("+0+","+30+")"
+        "transform":"translate("+0+","+-30+")"
     })
 
     sliderGroup.append("rect").attr({
         class:"sliderBg",
-        x:5,
-        width:10,
-        height:200
+        y:5,
+        width: that.width + 5,
+        height:480
     }).style({
-        fill:"lightgray"
+        fill:"lightgray",
+        opacity:"0.1"
     })
 
     sliderGroup.append("rect").attr({
         "class":"sliderHandle",
-        y:sliderScale(1),
+        x:sliderScale(1),
         width:20,
-        height:10,
+        height:480,
         rx:2,
         ry:2
     }).style({
-        fill:"#333333"
+        fill:"#333333",
+        opacity: 0.4
     }).call(sliderDragBehaviour)
 
 

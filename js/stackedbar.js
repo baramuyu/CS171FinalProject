@@ -7,44 +7,92 @@ StackedBarVis.prototype.filterData = function(_data){
     return _data.filter(function(d){
         return d.name != "All Reservoir";
     })
-}    
+}
 
-StackedBarVis.prototype.reformatData = function(_data){
+StackedBarVis.prototype.makeDateList = function(_data){
+    var dateList = [];
+
+    _data[0].values.forEach(function(d){
+        dateList.push(d.date);
+    })
+
+    this.dateList = dateList.sort(function(a, b){
+        return d3.ascending(a, b);
+    })
+
+}
+
+StackedBarVis.prototype.getDateHasData = function(_date){
+    var that = this;
+    selDate = _date;
+    var index = 0;
+
+    try{
+        that.dateList.forEach(function(d, i){
+            if(d >= selDate){
+                index = i;
+                throw BreakException;
+            }
+        })
+    }catch(e){ //nothing
+    }
+
+    return that.dateList[index - 1];
+}
+
+StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
     filData = _data;
+    selDate = _selectedDate;
 
     //Data wrangling
     var y0 = 0;
     var y1 = 0;
+    var index = -1;
+    var count = 0;
     data = 
     [{
-        state: "Storage on mm/dd/yyyy",
+        state: "Storage on selected day",
         storages: filData.map(function(d) {
-                      var latestData = d.values.length - 1;
-                      return {
-                          "name": d.name,
-                          "id": d.id,
-                          "y0": 0, //temporary
-                          "y1": 0, //temporary
-                          "value": +d.values[latestData].storage,
-                          "capacity": +d.capacity
-                      }
-                  }),
+            index = -1;
+            try{      
+                d.values.forEach(function(e, i){
+                    if(e.date == selDate){
+                        index = i
+                        throw BreakException;
+                    }
+                })
+            }catch(e){ //nothing
+            }
+
+            if(index == -1)
+                count++;
+            
+            return {
+                "name": d.name,
+                "id": d.id,
+                "y0": 0, //temporary
+                "y1": 0, //temporary
+                "value": (index != -1) ? +d.values[index].storage : 0,
+                "capacity": +d.capacity
+            }
+        }),
         total: 0 //temporary
     },
     {
         state: "Storage Capacity",
         storages: filData.map(function(d) {
-                      var latestData = d.values.length - 1;
-                      return {
-                          "name": d.name,
-                          "id": d.id,
-                          "y0": 0, //temporary
-                          "y1": 0, //temporary
-                          "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
-                      }
-                  }),
+            return {
+                "name": d.name,
+                "id": d.id,
+                "y0": 0, //temporary
+                "y1": 0, //temporary
+                "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
+            }
+        }),
         total: 0 //temporary
     }]
+
+    console.log("uncounted reservoir,", count)
 
      //sorting
     data[0].storages = data[0].storages.sort(function(a, b){
@@ -102,6 +150,9 @@ StackedBarVis.prototype.createStackBar = function(_resData){
 
     var y = d3.scale.linear()
         .rangeRound([height, 0]);
+    //save to this
+    this.x = x;
+    this.y = y;
 
     var xAxis = d3.svg.axis()
         .scale(x)
@@ -117,14 +168,16 @@ StackedBarVis.prototype.createStackBar = function(_resData){
         .attr("height", height + margin.top + margin.bottom)
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    this.svg = svg;
 
       //Data filtering - remove "All reservoir"
-      var filData = this.filterData(oldData)
-      var data = this.reformatData(filData);
+      this.filData = this.filterData(oldData)
+      this.makeDateList(this.filData);
+      var data = this.reformatData(this.filData, "20140916"); //Latest Date in data
 
       //total capacity
       var totalCap = 0;
-      filData.map(function(d) {
+      this.filData.map(function(d) {
           if(!isNaN(d.capacity))
               totalCap += +d.capacity;
       })
@@ -182,3 +235,41 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           });
 
 }
+
+StackedBarVis.prototype.updateStackBar = function(_date){
+    var that = this;
+    var selDate = _date;
+
+    var data = this.reformatData(that.filData, selDate);
+
+    var bar = that.svg.selectAll(".g")
+        .data(data)
+
+    bar.selectAll("rect")
+        .data(function(d){return d.storages})
+        .transition().duration(10)
+        .attr("width", that.x.rangeBand())
+        .attr("y", function(d) { return that.y(d.y1); 
+        })
+        .attr("height", function(d) {return parseFloat(that.y(d.y0)) - parseFloat(that.y(d.y1)); })
+}
+
+StackedBarVis.prototype.dateChanged = function(_date){
+
+    //read about time format http://stackoverflow.com/questions/17721929/date-format-in-d3-js
+    formatDate = d3.time.format("%Y%m%d")
+    selDate = formatDate(_date)
+
+    console.log("selected,",selDate);
+
+    //get the closest date has data
+    resDate = this.getDateHasData(selDate);
+
+    console.log("showned ,", resDate)
+
+    this.updateStackBar(resDate);
+
+}
+
+
+
