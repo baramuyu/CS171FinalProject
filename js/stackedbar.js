@@ -2,6 +2,11 @@ StackedBarVis = function(_parentElement){
     this.parentElement = _parentElement;
 }
 
+StackedBarVis.filterData = function(data){
+    return data.filter(function(d){
+        return d.name != "All Reservoir";
+    })
+}
 
 StackedBarVis.createStackBar = function(_resData){
 
@@ -34,6 +39,9 @@ StackedBarVis.createStackBar = function(_resData){
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      //Data filtering
+      oldData = this.filterData(oldData);
+
       //Data wrangling
       var y0 = 0;
       var y1 = 0;
@@ -44,6 +52,7 @@ StackedBarVis.createStackBar = function(_resData){
                         var latestData = d.values.length - 1;
                         return {
                             "name": d.name,
+                            "id": d.id,
                             "y0": 0, //temporary
                             "y1": 0, //temporary
                             "value": +d.values[latestData].storage,
@@ -58,6 +67,7 @@ StackedBarVis.createStackBar = function(_resData){
                         var latestData = d.values.length - 1;
                         return {
                             "name": d.name,
+                            "id": d.id,
                             "y0": 0, //temporary
                             "y1": 0, //temporary
                             "capacity": (!isNaN(d.capacity)) ? +d.capacity : 0
@@ -145,7 +155,22 @@ StackedBarVis.createStackBar = function(_resData){
           .attr("y", function(d) { return y(d.y1); 
           })
           .attr("height", function(d) {return parseFloat(y(d.y0)) - parseFloat(y(d.y1)); })
-          .style("fill", function(d) { return color(d.name); });
+          .style("fill", function(d) { return color(d.name); })
+          .attr("class","stuckbar")
+          .attr("id", function(d,i){ return d.id })
+          .on("mouseenter",function(d,i){ 
+              // Highlight nodes
+              d3.selectAll(".stuckbar").style("opacity", 0.3)    
+              d3.select(this).style("opacity", 1)
+              d3.select("#"+d.id).style("opacity", 1)              
+              
+              // d.years[vars.year-vars.min_year].top_partners.forEach(function(e) {
+              //   d3.select("#country_"+e.country_id).style("opacity", 1) 
+              // })
+          })
+          .on("mouseleave",function(){
+              d3.selectAll(".stuckbar").style("opacity", 1)             
+          });
 
       // var legend = svg.selectAll(".legend")
       //     .data(data[0].storages)

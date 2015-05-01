@@ -30,6 +30,7 @@ Wrangling.resDataWrang = function(_resData){
 
     	resData.push({
     			name: d.Station,
+    			id: d.ID,
                 capacity: d.Capacity,
                 latitude: d.Latitude,
                 longitude: d.Longitude,

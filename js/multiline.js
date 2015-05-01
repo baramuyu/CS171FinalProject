@@ -26,7 +26,6 @@ MultiLineVis.calCapacity = function(data){
       if(!isNaN(d.capacity))
           totalCap += +d.capacity;
   })
-  console.log("totalCap,", totalCap)
 
   return totalCap;
 }
