@@ -62,7 +62,7 @@ MultiLineVis.createMultiLine = function(_resData, _allData){
     var line = d3.svg.line()
         .interpolate("basis")
         .x(function(d) { return x(parseDate(d.date)); })
-        .y(function(d) { return y(d.storage); });
+        .y(function(d) { return y(d.percentage); });
 
     var svg = d3.select("#multiLineVis").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -73,11 +73,11 @@ MultiLineVis.createMultiLine = function(_resData, _allData){
       //x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
       x.domain([parseDate("20000104"),parseDate("20140916")]);
 
-//      y.domain([0,100]);
-      y.domain([
-        d3.min(data, function(c) { return d3.min(c.values, function(v) { return v.storage; }); }),
-        d3.max(data, function(c) { return d3.max(c.values, function(v) { return v.storage; }); })
-      ]);
+      y.domain([0,100]);
+      // y.domain([
+      //   d3.min(data, function(c) { return d3.min(c.values, function(v) { return v.storage; }); }),
+      //   d3.max(data, function(c) { return d3.max(c.values, function(v) { return v.storage; }); })
+      // ]);
 
       svg.append("g")
           .attr("class", "x axis")
@@ -106,7 +106,7 @@ MultiLineVis.createMultiLine = function(_resData, _allData){
 
       city.append("text")
           .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-          .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.storage) + ")"; })
+          .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.percentage) + ")"; })
           .attr("x", 3)
           .attr("dy", ".35em")
           .text(function(d) { return d.name; });
