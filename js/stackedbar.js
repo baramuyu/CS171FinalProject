@@ -1,20 +1,21 @@
-StackedBarVis = function(_parentElement){
-    this.parentElement = _parentElement;
+StackedBarVis = function(_eventHandler){
+    this.eventHandler = _eventHandler;
 }
 
-StackedBarVis.filterData = function(data){
+StackedBarVis.prototype.filterData = function(data){
     return data.filter(function(d){
         return d.name != "All Reservoir";
     })
 }
 
-StackedBarVis.createStackBar = function(_resData){
+StackedBarVis.prototype.createStackBar = function(_resData){
 
     var oldData = _resData;
+    var that = this;
 
     var margin = {top: 20, right: 500, bottom: 30, left: 40},
         width = 1500 - margin.left - margin.right,
-        height = 500 - margin.top - margin.bottom;
+        height = 800 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
@@ -159,35 +160,17 @@ StackedBarVis.createStackBar = function(_resData){
           .attr("class","stuckbar")
           .attr("id", function(d,i){ return d.id })
           .on("mouseenter",function(d,i){ 
-              // Highlight nodes
+              // Highlight bar
               d3.selectAll(".stuckbar").style("opacity", 0.3)    
               d3.select(this).style("opacity", 1)
-              d3.select("#"+d.id).style("opacity", 1)              
+              d3.select("#"+d.id).style("opacity", 1)
+
+              //change multi line chart
+              $(that.eventHandler).trigger("barSelected",d.id);              
               
-              // d.years[vars.year-vars.min_year].top_partners.forEach(function(e) {
-              //   d3.select("#country_"+e.country_id).style("opacity", 1) 
-              // })
           })
           .on("mouseleave",function(){
               d3.selectAll(".stuckbar").style("opacity", 1)             
           });
 
-      // var legend = svg.selectAll(".legend")
-      //     .data(data[0].storages)
-      //   .enter().append("g")
-      //     .attr("class", "legend")
-      //     .attr("transform", function(d, i) { return "translate(0," + (height - (i * 20)) + ")"; });
-
-      // legend.append("rect")
-      //     .attr("x", width - 18)
-      //     .attr("width", 18)
-      //     .attr("height", 18)
-      //     .style("fill", function(d) { return color(d.name); });
-
-      // legend.append("text")
-      //     .attr("x", width - 24)
-      //     .attr("y", 9)
-      //     .attr("dy", ".35em")
-      //     .style("text-anchor", "start")
-      //     .text(function(d) { return d.name; });
 }

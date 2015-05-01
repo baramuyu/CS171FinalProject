@@ -1,9 +1,8 @@
 
-MultiLineVis = function(_parentElement){
-    this.parentElement = _parentElement;
+MultiLineVis = function(){
 }
 
-MultiLineVis.PickTop10 = function(_resData){
+MultiLineVis.prototype.PickTop10 = function(_resData){
     var data = _resData;
     var res = [];
     var count = 0;
@@ -20,7 +19,7 @@ MultiLineVis.PickTop10 = function(_resData){
     return res;
 }
 
-MultiLineVis.calCapacity = function(data){
+MultiLineVis.prototype.calCapacity = function(data){
   var totalCap = 0;
   data.forEach(function(d){
       if(!isNaN(d.capacity))
@@ -30,7 +29,7 @@ MultiLineVis.calCapacity = function(data){
   return totalCap;
 }
 
-MultiLineVis.createMultiLine = function(_resData, _allData){
+MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
     var data = _resData;
     var alldata = _allData;
 
@@ -73,10 +72,6 @@ MultiLineVis.createMultiLine = function(_resData, _allData){
       x.domain([parseDate("20000104"),parseDate("20140916")]);
 
       y.domain([0,100]);
-      // y.domain([
-      //   d3.min(data, function(c) { return d3.min(c.values, function(v) { return v.storage; }); }),
-      //   d3.max(data, function(c) { return d3.max(c.values, function(v) { return v.storage; }); })
-      // ]);
 
       svg.append("g")
           .attr("class", "x axis")
@@ -112,3 +107,11 @@ MultiLineVis.createMultiLine = function(_resData, _allData){
 
 }
 
+MultiLineVis.prototype.updateMultiLine = function(_resData, _allData){
+
+}
+
+MultiLineVis.prototype.barSelected = function(_barId){
+    barId = _barId 
+    console.log("bar secected!", barId)
+}

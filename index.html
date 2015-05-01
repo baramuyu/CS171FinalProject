@@ -60,30 +60,20 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
     var initVis = function(){    // call this function after Data is loaded, reformatted and bound to the variables
 
-        var MyEventHandler = new Object();
+        var MyEventHandler = {};
 
-        var svg_multi = d3.select("#multiLineVis").append("svg")
-                .attr("width", 1000)
-                .attr("height", 500);
-
-        var svg_stack = d3.select("#stackedbarVis").append("svg")
-                .attr("width", 1500)
-                .attr("height", 500);
-
-        var svg_sankey = d3.select("#sankeyVis").append("svg")
-                .attr("width", 1800)
-                .attr("height", 1200);
-
-        MultiLineVis = new MultiLineVis(svg_multi);
-        StackedBarVis = new StackedBarVis(svg_stack);
-        SankeyVis = new SankeyVis(svg_sankey);
+        MultiLineVis = new MultiLineVis();
+        StackedBarVis = new StackedBarVis(MyEventHandler);
+        SankeyVis = new SankeyVis();
       
         //***Data Wrangling
         Wrangling = new Wrangling();
 
         // $(MyEventHandler).bind("selectionChanged", function(event, selDateStart, selDateEnd){
         // });
-
+        $(MyEventHandler).bind("barSelected", function(event, barId){
+            MultiLineVis.barSelected(barId)
+        });
     }
 
     // call this function after both files are loaded -- error should be "null" if no error
@@ -95,16 +85,17 @@ $(function(){ // this function is called after the HTML document is fully loaded
             //resData = Wrangling.resDataWrang(_resData);
             //usageData = Wrangling.usageDataWrang(_usageData, _dicData)
             
+            initVis();
+
             //multipule line chart
-             resDataTop10 = MultiLineVis.PickTop10(_resData);
-             MultiLineVis.createMultiLine(resDataTop10, _resData);
+            resDataTop10 = MultiLineVis.PickTop10(_resData);
+            MultiLineVis.createMultiLine(resDataTop10, _resData);
 
             //stacked bar chart
             StackedBarVis.createStackBar(_resData);
 
             //sankey chart
             SankeyVis.createSankey(_usageData);
-
         }
     }
 

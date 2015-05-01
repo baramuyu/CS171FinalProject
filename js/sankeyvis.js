@@ -1,7 +1,7 @@
 SankeyVis = function(){
 }
 
-SankeyVis.createSankey = function(graph){
+SankeyVis.prototype.createSankey = function(graph){
 
 	var units = "Mgal";
 	 
