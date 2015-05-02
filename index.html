@@ -35,11 +35,11 @@
         <h4>Harvard University | CS171 | Final Project</h4>
         <div class="row">
                 
-                <div class="col-md-6" id="stackedbarVis">
+                <div class="col-md-4" id="stackedbarVis">
                 <h3>Reservoir Storage and Capacity  </h3>
                 </div>
                 
-                <div class="col-md-6" id="multiLineVis">
+                <div class="col-md-8" id="multiLineVis">
                 <h3>Storage Changes Over Time  </h3>
                 </div>
         </div>
@@ -100,7 +100,7 @@ $(function(){ // this function is called after the HTML document is fully loaded
             StackedBarVis.createStackBar(_resData);
 
             //sankey chart
-            //SankeyVis.createSankey(_usageData);
+            SankeyVis.createSankey(_usageData);
         }
     }
 

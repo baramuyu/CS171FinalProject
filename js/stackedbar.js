@@ -5,7 +5,7 @@ StackedBarVis = function(_eventHandler, _color){
 
 StackedBarVis.prototype.filterData = function(_data){
     return _data.filter(function(d){
-        return d.name != "All Reservoir";
+        return d.name != "All Reservoir" && d.capacity != "NA" && d.id != "EXC" ; //"EXC"->strange data
     })
 }
 
@@ -66,7 +66,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
 
             if(index == -1)
                 count++;
-            
+           
             return {
                 "name": d.name,
                 "id": d.id,
@@ -141,9 +141,11 @@ StackedBarVis.prototype.createStackBar = function(_resData){
     var oldData = _resData;
     var that = this;
 
-    var margin = {top: 20, right: 100, bottom: 30, left: 40},
-        width = 600 - margin.left - margin.right,
-        height = 800 - margin.top - margin.bottom;
+    this.stateClick = false;
+
+    var margin = {top: 50, right: 50, bottom: 30, left: 40},
+        width = 400 - margin.left - margin.right,
+        height = 600 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
         .rangeRoundBands([0, width], .1);
@@ -222,17 +224,34 @@ StackedBarVis.prototype.createStackBar = function(_resData){
               // Highlight bar
               d3.selectAll(".stuckbar").style("opacity", 0.3)    
               d3.select(this).style("opacity", 1)
-              d3.select("#"+d.id).style("opacity", 1)
+              d3.selectAll("#"+d.id).style("opacity", 1)
 
               //change multi line chart
               $(that.eventHandler).trigger("barSelected",d.id);
+              //unClick 
+              this.stateClick = false;
               
           })
+          .on("click", function(d){
+              this.stateClick = true;
+          })
           .on("mouseleave",function(){
-              d3.selectAll(".stuckbar").style("opacity", 1)
-              //change multi line chart
-              $(that.eventHandler).trigger("barSelected","N/A");        
+              //deactivate "mouseleave" when a bar is clicked 
+              if(!this.stateClick){
+                  d3.selectAll(".stuckbar").style("opacity", 1)
+                  //change multi line chart
+                  $(that.eventHandler).trigger("barSelected","N/A");
+              }
           });
+
+          //activate all bars
+          // d3.select("body").on("click", function(d){ 
+          //   console.log(d,"click status off")
+            // d3.selectAll(".stuckbar").style("opacity", 1)
+            // //change multi line chart
+            // $(that.eventHandler).trigger("barSelected","N/A");
+            //this.stateClick = false; 
+          //})
 
 }
 

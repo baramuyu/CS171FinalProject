@@ -41,8 +41,8 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     this.data = _allData;
     var that = this;
 
-    var margin = {top: 20, right: 200, bottom: 30, left: 100},
-        width = 1160 - margin.left - margin.right,
+    var margin = {top: 20, right: 200, bottom: 30, left: 50},
+        width = 850 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y%m%d").parse;
@@ -87,7 +87,7 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     //x.domain(d3.extent(data, function(c) { return d3.min(c.values, function(v) { return parseDate(v.date); }); }));
     x.domain([parseDate("20000104"),parseDate("20140916")]);
 
-    y.domain([0,100]);
+    y.domain([0,120]);
 
     svg.append("g")
         .attr("class", "x axis")
@@ -182,7 +182,7 @@ MultiLineVis.prototype.addSlider = function(svg){
         var sliderValue = sliderScale.invert(value);
         var selectValue = x.invert(value);
 
-        d3.select(".sliderHandle").attr("x", function () { return sliderScale(sliderValue); })
+        d3.selectAll(".sliderHandle").attr("x", function () { return sliderScale(sliderValue); })
         d3.select(".sliderHandle-bg").attr("x", function () { return sliderScale(sliderValue) - 20; })
 
         //change multi line chart
@@ -199,20 +199,34 @@ MultiLineVis.prototype.addSlider = function(svg){
 
     sliderGroup.append("rect").attr({
         class:"sliderBg",
-        y:5,
+        y:30,
         width: that.width + 5,
-        height:480
+        height:450
     }).style({
         fill:"lightgray",
         opacity:0.1
     })
  
+    sliderGroup.append("rect").attr({
+        "class":"sliderHandle-bg",
+        x:sliderScale(1) - 20,
+        y: 11,
+        width:50,
+        height:20,
+        rx:5,
+        ry:5
+    }).style({
+        fill:"red",
+        opacity: 0.3,
+        stroke: "grey"
+    }).call(sliderDragBehaviour)
 
     sliderGroup.append("rect").attr({
         "class":"sliderHandle",
         x:sliderScale(1),
+        y: 30,
         width:10,
-        height:480,
+        height:450,
         rx:2,
         ry:2
     }).style({
@@ -223,8 +237,9 @@ MultiLineVis.prototype.addSlider = function(svg){
     sliderGroup.append("rect").attr({
             "class":"sliderHandle-bg",
             x:sliderScale(1)-20,
+            y: 30,
             width:40,
-            height:480,
+            height:450,
             rx:2,
             ry:2
         }).style({
