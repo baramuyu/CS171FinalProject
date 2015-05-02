@@ -218,14 +218,14 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           .style("fill", function(d) { return that.color(d.id); })
           .attr("class","stuckbar")
           .attr("id", function(d,i){ return d.id })
-          .on("mouseenter",function(d,i){ 
+          .on("mouseover",function(d,i){ 
               // Highlight bar
               d3.selectAll(".stuckbar").style("opacity", 0.3)    
               d3.select(this).style("opacity", 1)
               d3.select("#"+d.id).style("opacity", 1)
 
               //change multi line chart
-              $(that.eventHandler).trigger("barSelected",d.id);      
+              $(that.eventHandler).trigger("barSelected",d.id);
               
           })
           .on("mouseleave",function(){

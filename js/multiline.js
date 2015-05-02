@@ -31,8 +31,13 @@ MultiLineVis.prototype.calCapacity = function(data){
   return totalCap;
 }
 
-MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
-    //this.data = _resData;
+MultiLineVis.prototype.filterData = function(_Data, _selLake){
+    return _data.filter(function(d){
+        return d.name == "All Reservoir" || d.name == _selLake;
+    })
+}
+
+MultiLineVis.prototype.createMultiLine = function(_allData){
     this.data = _allData;
     var that = this;
 
@@ -116,7 +121,7 @@ MultiLineVis.prototype.createMultiLine = function(_resData, _allData){
       d3.select("#L_ALL").style("opacity", 1)
 
     //create slide bar
-    this.addSlider(svg);
+    //this.addSlider(svg);
 
 }
 
@@ -124,12 +129,13 @@ MultiLineVis.prototype.updateMultiLine = function(_barId){
     barId = _barId;
     console.log("bar secected!", barId);
 
-    d3.selectAll(".lake").style("opacity", 0)  
+    d3.selectAll(".lake").style("opacity", 0.5)  
     d3.select("#L_ALL").style("opacity", 1)
 
     if(barId != ""){
-        d3.select("#L_"+barId).style("opacity", 1)
+         d3.select("#L_"+barId).style("opacity", 1)
     }
+
 }
 
 MultiLineVis.prototype.barSelected = function(_barId){
@@ -174,18 +180,7 @@ MultiLineVis.prototype.addSlider = function(svg){
         fill:"lightgray",
         opacity:0.1
     })
-    
-    sliderGroup.append("rect").attr({
-            "class":"sliderHandle-bg",
-            x:sliderScale(1)-20,
-            width:40,
-            height:480,
-            rx:2,
-            ry:2
-        }).style({
-        opacity: 0
-    }).call(sliderDragBehaviour)
-
+ 
 
     sliderGroup.append("rect").attr({
         "class":"sliderHandle",
@@ -199,5 +194,15 @@ MultiLineVis.prototype.addSlider = function(svg){
         opacity: 0.3
     })
 
+    sliderGroup.append("rect").attr({
+            "class":"sliderHandle-bg",
+            x:sliderScale(1)-20,
+            width:40,
+            height:480,
+            rx:2,
+            ry:2
+        }).style({
+        opacity: 0
+    }).call(sliderDragBehaviour)
 
 }

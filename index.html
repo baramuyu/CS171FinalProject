@@ -92,7 +92,7 @@ $(function(){ // this function is called after the HTML document is fully loaded
 
             //multipule line chart
             resDataTop10 = MultiLineVis.PickTop10(_resData);
-            MultiLineVis.createMultiLine(resDataTop10, _resData);
+            MultiLineVis.createMultiLine(_resData);
 
             //stacked bar chart
             StackedBarVis.createStackBar(_resData);
