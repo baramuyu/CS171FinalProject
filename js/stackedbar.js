@@ -141,8 +141,8 @@ StackedBarVis.prototype.createStackBar = function(_resData){
     var oldData = _resData;
     var that = this;
 
-    var margin = {top: 20, right: 500, bottom: 30, left: 40},
-        width = 1500 - margin.left - margin.right,
+    var margin = {top: 20, right: 100, bottom: 30, left: 40},
+        width = 600 - margin.left - margin.right,
         height = 800 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
@@ -231,7 +231,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           .on("mouseleave",function(){
               d3.selectAll(".stuckbar").style("opacity", 1)
               //change multi line chart
-              $(that.eventHandler).trigger("barSelected","");        
+              $(that.eventHandler).trigger("barSelected","N/A");        
           });
 
 }
@@ -247,7 +247,7 @@ StackedBarVis.prototype.updateStackBar = function(_date){
 
     bar.selectAll("rect")
         .data(function(d){return d.storages})
-        .transition().duration(10)
+        .transition().duration(0)
         .attr("width", that.x.rangeBand())
         .attr("y", function(d) { return that.y(d.y1); 
         })
