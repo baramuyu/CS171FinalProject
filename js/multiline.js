@@ -219,9 +219,9 @@ MultiLineVis.prototype.addSlider = function(svg){
         rx:2,
         ry:2
     }).style({
-        fill:"red",
+        fill:"E96D63",
         opacity: 0.3,
-        stroke: "grey"
+        stroke: "red"
     }).call(sliderDragBehaviour)
 
     
@@ -231,13 +231,13 @@ MultiLineVis.prototype.addSlider = function(svg){
         "class":"sliderHandle",
         x:sliderScale(1),
         y: 30,
-        width:10,
+        width:5,
         height:450,
         rx:2,
         ry:2
     }).style({
-        fill:"red",
-        opacity: 0.3
+        fill:"E96D63",
+        opacity: 0.5
     })
 
     //Slider Handle Bar (unvisible)
