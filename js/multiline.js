@@ -60,11 +60,17 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
 
     var xAxis = d3.svg.axis()
         .scale(x)
-        .orient("bottom");
+        .orient("bottom")
+        .innerTickSize(-height)
+        .outerTickSize(0)
+        .tickPadding(10);
 
     var yAxis = d3.svg.axis()
         .scale(y)
-        .orient("left");
+        .orient("left")
+        .innerTickSize(-width)
+        .outerTickSize(0)
+        .tickPadding(10);
     //calculate total capacity
     var totalCapacity = this.calCapacity(this.data);
 
@@ -97,6 +103,8 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
+
+
       .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
@@ -172,7 +180,7 @@ MultiLineVis.prototype.addSlider = function(svg){
     var that = this;
     var x = that.x;
     var width = that.width; // I don't know why I can't use "that" inside of sliderDragged functionma
-    var formatDate = d3.time.format("%x")
+    var formatDate = d3.time.format("%x") //mm/dd/yyyy
 
     // TODO: Think of what is domain and what is range for the y axis slider !!
     var sliderScale = d3.scale.linear().domain([.1,1]).range([0,width])
@@ -215,6 +223,7 @@ MultiLineVis.prototype.addSlider = function(svg){
                     .attr("class", "gsliderHandle")
                     .attr("transform", "translate(" + sliderScale(1) + ",0)")
                     .call(sliderDragBehaviour)
+                    .attr("cursor", "pointer")
 
     //Slider Handle Rectangle (visible)
     sliderBar.append("rect").attr({
