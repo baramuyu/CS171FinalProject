@@ -172,6 +172,7 @@ MultiLineVis.prototype.addSlider = function(svg){
     var that = this;
     var x = that.x;
     var width = that.width; // I don't know why I can't use "that" inside of sliderDragged functionma
+    var formatDate = d3.time.format("%x")
 
     // TODO: Think of what is domain and what is range for the y axis slider !!
     var sliderScale = d3.scale.linear().domain([.1,1]).range([0,width])
@@ -182,12 +183,14 @@ MultiLineVis.prototype.addSlider = function(svg){
         var sliderValue = sliderScale.invert(value);
         var selectValue = x.invert(value);
 
-        d3.selectAll(".sliderHandle").attr("x", function () { return sliderScale(sliderValue); })
-        d3.select(".sliderHandle-bg").attr("x", function () { return sliderScale(sliderValue) - 20; })
+        d3.selectAll(".gsliderHandle")
+            .attr("transform", "translate(" + sliderScale(sliderValue) + ",0)")
+            .select("text")
+            .text(formatDate(selectValue))
+
 
         //change multi line chart
-        $(that.eventHandler).trigger("dateChanged",selectValue);   
-
+        $(that.eventHandler).trigger("dateChanged",selectValue);  
     }
     var sliderDragBehaviour = d3.behavior.drag()
         .on("drag", sliderDragged)
@@ -207,43 +210,43 @@ MultiLineVis.prototype.addSlider = function(svg){
         opacity:0.1
     })
  
-    //Slider Handle Rectangle (visible)
+    //the part of draging
     var sliderBar = sliderGroup.append("g")
+                    .attr("class", "gsliderHandle")
+                    .attr("transform", "translate(" + sliderScale(1) + ",0)")
+                    .call(sliderDragBehaviour)
 
+    //Slider Handle Rectangle (visible)
     sliderBar.append("rect").attr({
-        "class":"sliderHandle-bg",
-        x:sliderScale(1) - 20,
+        x: -40,
         y: 11,
-        width:50,
+        width:80,
         height:20,
-        rx:2,
+        rx:2, //rx is how round
         ry:2
     }).style({
-        fill:"E96D63",
+        fill:"salmon",
         opacity: 0.3,
-        stroke: "red"
-    }).call(sliderDragBehaviour)
-
-    
+        stroke: "red",
+        "stroke-width": "3px"
+    })
 
     //Slider Handle Bar (visible)
     sliderBar.append("rect").attr({
-        "class":"sliderHandle",
-        x:sliderScale(1),
+        x: 0,
         y: 30,
         width:5,
         height:450,
         rx:2,
         ry:2
     }).style({
-        fill:"E96D63",
+        fill:"salmon",
         opacity: 0.5
     })
 
     //Slider Handle Bar (unvisible)
     sliderBar.append("rect").attr({
-            "class":"sliderHandle-bg",
-            x:sliderScale(1)-20,
+            x: -20,
             y: 30,
             width:40,
             height:450,
@@ -251,6 +254,14 @@ MultiLineVis.prototype.addSlider = function(svg){
             ry:2
         }).style({
         opacity: 0
-    }).call(sliderDragBehaviour)
+    })
+
+    sliderBar.append("text").attr({
+            x: 0,
+            y: 25,
+            "text-anchor" : "middle"
+    }).style({
+            fill: "black"
+    }).text(formatDate(x.invert(width)))
 
 }

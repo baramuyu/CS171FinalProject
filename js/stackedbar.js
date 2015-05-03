@@ -37,12 +37,16 @@ StackedBarVis.prototype.getDateHasData = function(_date){
     }catch(e){ //nothing
     }
 
-    return that.dateList[index - 1];
+    return (index == 0) ? that.dateList[index] : that.dateList[index - 1];
 }
 
 StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
     filData = _data;
     selDate = _selectedDate;
+
+    var parseDate = d3.time.format("%Y%m%d").parse;
+    var fmDate = d3.time.format("%x");
+    var xAxisDate = fmDate(parseDate(selDate))
 
     //Data wrangling
     var y0 = 0;
@@ -52,7 +56,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
     var count = 0;
     data = 
     [{
-        state: "Storage on selected day",
+        state: "Storage on " + xAxisDate,
         storages: filData.map(function(d, i) {
             index = -1;
             try{      
@@ -163,6 +167,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
     var xAxis = d3.svg.axis()
         .scale(x)
         .orient("bottom");
+    this.xAxis = xAxis;
 
     var yAxis = d3.svg.axis()
         .scale(y)
@@ -296,6 +301,11 @@ StackedBarVis.prototype.updateStackBar = function(_date){
         .attr("y", function(d) { return that.y(d.y1); 
         })
         .attr("height", function(d) {return parseFloat(that.y(d.y0)) - parseFloat(that.y(d.y1)); })
+
+    // updates domain and axis
+    that.x.domain([data[0].state,data[1].state]);
+    that.svg.select(".x.axis")
+        .call(that.xAxis);
 }
 
 StackedBarVis.prototype.dateChanged = function(_date){
