@@ -40,3 +40,17 @@ body{
 .link:hover {
   stroke-opacity: .5;
 }
+
+.tooltip {   
+    line-height: 1;
+    font-weight: normal;
+    padding: 6px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+}
+
+.frame{
+    border-color: red;
+    border-width: 5px;
+}

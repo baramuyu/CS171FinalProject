@@ -207,21 +207,27 @@ MultiLineVis.prototype.addSlider = function(svg){
         opacity:0.1
     })
  
-    sliderGroup.append("rect").attr({
+    //Slider Handle Rectangle (visible)
+    var sliderBar = sliderGroup.append("g")
+
+    sliderBar.append("rect").attr({
         "class":"sliderHandle-bg",
         x:sliderScale(1) - 20,
         y: 11,
         width:50,
         height:20,
-        rx:5,
-        ry:5
+        rx:2,
+        ry:2
     }).style({
         fill:"red",
         opacity: 0.3,
         stroke: "grey"
     }).call(sliderDragBehaviour)
 
-    sliderGroup.append("rect").attr({
+    
+
+    //Slider Handle Bar (visible)
+    sliderBar.append("rect").attr({
         "class":"sliderHandle",
         x:sliderScale(1),
         y: 30,
@@ -234,7 +240,8 @@ MultiLineVis.prototype.addSlider = function(svg){
         opacity: 0.3
     })
 
-    sliderGroup.append("rect").attr({
+    //Slider Handle Bar (unvisible)
+    sliderBar.append("rect").attr({
             "class":"sliderHandle-bg",
             x:sliderScale(1)-20,
             y: 30,
