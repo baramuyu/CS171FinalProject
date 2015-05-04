@@ -100,7 +100,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
         total: 0 //temporary
     }]
 
-    console.log("uncounted reservoir,", count)
+    //console.log("uncounted reservoir,", count)
 
      //sorting
     data[0].storages = data[0].storages.sort(function(a, b){
@@ -315,14 +315,16 @@ StackedBarVis.prototype.dateChanged = function(_date){
     formatDate = d3.time.format("%Y%m%d")
     selDate = formatDate(_date)
 
-    console.log("selected,",selDate);
+    //console.log("selected,",selDate);
 
     //get the closest date has data
     resDate = this.getDateHasData(selDate);
 
-    console.log("showned ,", resDate)
+    //console.log("showned ,", resDate)
 
     this.updateStackBar(resDate);
+
+    return resDate;
 
 }
 

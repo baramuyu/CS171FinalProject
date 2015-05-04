@@ -9,9 +9,9 @@ body{
   shape-rendering: crispEdges;
 }
 
-.tick line{
+/*.tick line{
   opacity: 0.2;
-}
+}*/
 
 .x.axis path {
   display: none;

@@ -91,7 +91,7 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     this.svg = svg;
 
     var filData = this.filterData(this.data, "SHA");
-    console.log("Fil,", filData)
+    //console.log("Fil,", filData)
 
     x.domain(d3.extent(filData[0].values, function(c){return parseDate(c.date) }))
     y.domain([0,120]);
@@ -99,11 +99,15 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     var tfm = d3.time.format("%b")
 
     //X axis
-    svg.append("g")
+    var xax = svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
-        .selectAll("text")  
+        
+    xax.selectAll("line")        
+        .attr("opacity", function(d){return (tfm(d) == "Jan") ? .5 : .2 })
+        
+    xax.selectAll("text")  
         .style("text-anchor", "start")
         .style("opacity", function(d){return (tfm(d) == "Jan") ? 1 : 0})
         .attr("dx", ".8em")
@@ -112,10 +116,14 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
         .attr("transform", function(d) {return "rotate(65)"});
 
     //Y axis and 100% storage line
-    var ax = svg.append("g")
+    var yax = svg.append("g")
         .attr("class", "y axis")
         .call(yAxis)
-        .append("line")
+
+    yax.selectAll("line")        
+        .attr("opacity", .2)
+
+    yax.append("line")
         .attr("x2", width)
         .attr("y1", y(100))
         .attr("y2", y(100))
@@ -125,13 +133,13 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
             "stroke-width": "2px"
         })
 
-        //Label "Storage(%)"
+        //Label "Utilization %"
         svg .append("text")
         .attr("y", -20)
-        .attr("x", 30)
+        .attr("x", 40)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
-        .text("Storage(%)");
+        .text("Utilization %");
 
     //draw lines
     var lake = svg.selectAll(".lake")
@@ -167,12 +175,12 @@ MultiLineVis.prototype.updateMultiLine = function(_barId){
     barId = _barId;
     var that = this;
     var parseDate = d3.time.format("%Y%m%d").parse;
-    console.log("bar secected!", barId);
+    //console.log("bar secected!", barId);
 
     if(barId != "N/A"){ //mouse hover
         filData = this.filterData(that.data, barId)
     
-        console.log("upd,", filData)
+        //console.log("upd,", filData)
 
         var lake = that.svg.selectAll(".lake")
                 .data(filData)
@@ -198,6 +206,16 @@ MultiLineVis.prototype.barSelected = function(_barId){
     this.updateMultiLine(_barId)
 }
 
+MultiLineVis.prototype.dateChanged = function(_shownDate){
+    var parseDate = d3.time.format("%Y%m%d").parse;
+    var formatDate = d3.time.format("%x") //mm/dd/yyyy
+
+
+    d3.selectAll(".gsliderHandle")
+        .select("text")
+        .text(formatDate(parseDate(_shownDate)))
+}
+
 MultiLineVis.prototype.addSlider = function(svg){
     var that = this;
     var x = that.x;
@@ -216,8 +234,8 @@ MultiLineVis.prototype.addSlider = function(svg){
 
         d3.selectAll(".gsliderHandle")
             .attr("transform", "translate(" + sliderScale(sliderValue) + ",0)")
-            .select("text")
-            .text(formatDate(selectValue))
+            // .select("text")
+            // .text(formatDate(selectValue))
 
         //change multi line chart
         $(that.eventHandler).trigger("dateChanged",selectValue);  
@@ -287,6 +305,7 @@ MultiLineVis.prototype.addSlider = function(svg){
         opacity: 0
     })
 
+    //Slider Handle Selected Date
     sliderBar.append("text").attr({x: 0, y: 25, "text-anchor" : "middle", "class": "lblDate"
     }).style({fill: "black"
     }).text(formatDate(x.invert(width)))

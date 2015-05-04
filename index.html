@@ -77,7 +77,8 @@ $(function(){ // this function is called after the HTML document is fully loaded
             MultiLineVis.barSelected(barId)
         });
         $(MyEventHandler).bind("dateChanged", function(event, selDate){
-            StackedBarVis.dateChanged(selDate)
+            var shownDate = StackedBarVis.dateChanged(selDate)
+            MultiLineVis.dateChanged(shownDate);
         });
     }
 
