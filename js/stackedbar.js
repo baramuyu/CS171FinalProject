@@ -5,7 +5,7 @@ StackedBarVis = function(_eventHandler, _color){
 
 StackedBarVis.prototype.filterData = function(_data){
     return _data.filter(function(d){
-        return d.name != "All Reservoir" && d.capacity != "NA" && d.id != "EXC" ; //"EXC"->strange data
+        return d.name != "ALL RESERVOIR AVERAGE" && d.capacity != "NA" && d.id != "EXC" ; //"EXC"->strange data
     })
 }
 
@@ -86,7 +86,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
         total: 0 //temporary
     },
     {
-        state: "Storage Capacity",
+        state: "Capacity",
         storages: filData.map(function(d, i) {
             return {
                 "name": d.name,
@@ -217,8 +217,9 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           .attr("class", "y axis")
           .call(yAxis)
         .append("text")
-          .attr("transform", "rotate(-90)")
-          .attr("y", 6)
+          //.attr("transform", "rotate(-90)")
+          .attr("y", -20)
+          .attr("x", 10)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text("Storage");
@@ -261,7 +262,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
               var ent = "<br/>"
               var sp = "&nbsp;&nbsp;&nbsp;"
 
-              tooltip.html(d.name+ent+sp+"Storage : "+ stoTip + " Mgal" +ent+sp+"Capacity: "+ capTip + " Mgal" +ent+ent+"Ratio: "+ ratioTip + " %" + ent + sp + "(Storage / Capacity)")  //<br/> is return/enter
+              tooltip.html(d.name+ent+sp+"Storage : "+ stoTip + " Mgal" +ent+sp+"Capacity: "+ capTip + " Mgal" +ent+sp+"Ratio: "+ ratioTip + " %")  //<br/> is return/enter
                   .style("left", (d3.event.pageX + 30) + "px")     
                   .style("top", (d3.event.pageY - 20) + "px");  
 
