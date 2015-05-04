@@ -222,7 +222,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
           .attr("x", -35)
           .attr("dy", ".71em")
           .style("text-anchor", "start")
-          .text("Storage(Acre-ft)");
+          .text("Storage (acre-ft)");
 
       var bar = svg.selectAll(".g")
         .data(data)
@@ -262,13 +262,14 @@ StackedBarVis.prototype.createStackBar = function(_resData){
               var ent = "<br/>"
               var sp = "&nbsp;&nbsp;&nbsp;"
 
-              tooltip.html(d.name+ent+sp+"Storage : "+ stoTip + "Acre-ft" +ent+sp+"Capacity: "+ capTip + "Acre-ft" +ent+sp+"Utilization: "+ ratioTip + " %")  //<br/> is return/enter
+              tooltip.html(d.name+ent+sp+"Storage : "+ stoTip + "&nbsp;acre-ft" +ent+sp+"Capacity: "+ capTip + "&nbsp;acre-ft" +ent+sp+"Utilization: "+ ratioTip + " %")  //<br/> is return/enter
                   .style("left", (d3.event.pageX + 30) + "px")     
                   .style("top", (d3.event.pageY - 20) + "px");  
 
 
           })
           .on("click", function(d){
+              debugger;
               this.stateClick = true;
           })
           .on("mouseleave",function(){
@@ -282,8 +283,9 @@ StackedBarVis.prototype.createStackBar = function(_resData){
               tooltip.transition()        
                   .duration(200)      
                   .style("opacity", 0);
+          })
 
-          });
+
 }
 
 StackedBarVis.prototype.updateStackBar = function(_date){
