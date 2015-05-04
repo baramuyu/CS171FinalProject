@@ -269,7 +269,6 @@ StackedBarVis.prototype.createStackBar = function(_resData){
 
           })
           .on("click", function(d){
-              debugger;
               this.stateClick = true;
           })
           .on("mouseleave",function(){
