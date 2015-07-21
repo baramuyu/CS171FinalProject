@@ -41,9 +41,9 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     this.data = _allData;
     var that = this;
 
-    var margin = {top: 20, right: 200, bottom: 50, left: 50},
-        width = 950 - margin.left - margin.right,
-        height = 600 - margin.top - margin.bottom;
+    var margin = {top: 70, right: 200, bottom: 50, left: 50},
+        width = 700 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
 
     var parseDate = d3.time.format("%Y%m%d").parse;
 
@@ -110,10 +110,10 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     xax.selectAll("text")  
         .style("text-anchor", "start")
         .style("opacity", function(d){return (tfm(d) == "Jan") ? 1 : 0})
-        .attr("dx", ".8em")
-        .attr("dy", "-.15em")
+        .attr("dx", "-2.5em")
+        .attr("dy", ".5em")
         .style("font-size", "13px")
-        .attr("transform", function(d) {return "rotate(65)"});
+        .attr("transform", function(d) {return "rotate(-50)"});
 
     //Y axis and 100% storage line
     var yax = svg.append("g")
@@ -135,8 +135,8 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
 
         //Label "Utilization %"
         svg .append("text")
-        .attr("y", -20)
-        .attr("x", 40)
+        .attr("y", -40)
+        .attr("x", 50)
         .attr("dy", ".71em")
         .style("text-anchor", "end")
         .text("Utilization %");
@@ -157,10 +157,14 @@ MultiLineVis.prototype.createMultiLine = function(_allData){
     var label = lake.append("g")
         .append("text")
         .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-        .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.percentage) + ")"; })
-        .attr("x", 3)
+        .attr("transform", function(d) { return "translate(" + x(parseDate(d.value.date)) + "," + y(d.value.percentage) + ")rotate(-50)"; })
+        .attr("x", 10)
         .attr("dy", ".35em")
         .text(function(d) { return d.name; });
+
+    svg.append("text").attr({x: 450, y: -25, "text-anchor" : "middle", "font-size": "15px"
+      }).style({fill: "red" 
+      }).text("Interactive Slider")
 
     //Always All Reservoir is shown
     d3.select("#L_OTH").style("opacity", 0)
@@ -192,7 +196,7 @@ MultiLineVis.prototype.updateMultiLine = function(_barId){
 
             lake.select("text")
                 .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-                .attr("transform", function(d) { return "translate(" + that.x(parseDate(d.value.date)) + "," + that.y(d.value.percentage) + ")"; })
+                .attr("transform", function(d) { return "translate(" + that.x(parseDate(d.value.date)) + "," + that.y(d.value.percentage) + ")rotate(-50)"; })
                 .text(function(d) { return d.name; });
 
         d3.select("#L_OTH").transition().duration(500).style("opacity", 1) //show line

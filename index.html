@@ -2,13 +2,15 @@
 <html>
 <head lang="en">
     <meta charset="UTF-8">
-    <title>Homework 3 - MyWorld Data</title>
+    <title>BUT THE DROUGHT CAME BACK? THE VERY NEXT YEAR!</title>
+
 
     <!-- ADD Libraries-->
     <script src="libs/d3/d3.min.js" charset="utf-8"></script>
     <script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
     <script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
     <script src="libs/queue.min.js"></script>
+    <script src="http://d3js.org/topojson.v1.min.js"></script>
 
     <!--Stylesheets-->
     <link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
@@ -22,6 +24,7 @@
     <script src = "js/stackedbar.js"></script>
     <script src = "js/sankey.js"></script>
     <script src = "js/sankeyvis.js"></script>
+    <script src = "js/map.js"></script>
     <!-- <script src="http://d3js.org/queue.v1.min.js"></script> -->
     <script src="libs/FileSaver.js"></script>
 
@@ -30,38 +33,40 @@
 
 </head>
 <body>
-    <div class="container">
-        <h1>BUT THE DROUGHT CAME BACK? <br>THE VERY NEXT YEAR!</h1>
-        <h4>Harvard University | CS171 | Final Project</h4>
+    <div class="container-fluid">
+        <h1>California Drought<br></h1>
+        <h4>Harvard University | Final Project | Yuki Steineman</h4>
+
         <div class="row">
+            <div class="col-md-3" id="mapVis"></div>
                 
-                <div class="col-md-4 col-lg-4 col-sm-4" id="stackedbarVis">
-                <h3>Reservoir Storage and Capacity  </h3>
-                </div>
-                
-                <div class="col-md-8 col-lg-8 col-sm-8" id="multiLineVis">
-                <h3>Storage Changes Over Time  </h3>
-                </div>
+            <div class="col-md-3" id="stackedbarVis">
+            <h3>California Reservoir <br>Levels vs Capacity</h3>
+            </div>
+            
+            <div class="col-md-6" id="multiLineVis">
+            <h3>Reservoir Utilization Over Time</h3>
+            </div>
         </div>
-        <div class="row">
-            <h3>Water Withdraw in 2010 </h3>
-            <div class="col-md-12 col-lg-12 col-sm-12" id="sankeyVis"></div>
+    </div>
+    <div class="container-fluid">
+        <div class="row" style="margin-left: 0.4cm">
+            <h3>2010 California Water Withdrawal Sankey Diagram</h3>
+            <div class="col-md-12" id="sankeyVis"></div>
         </div>
     </div>
 
 <script>
 $(function(){ // this function is called after the HTML document is fully loaded
 
-    // variables keeping global knowledge of the data
+    // define global variables
     var allData = [];
     var resData = [];
     var metaData = {};
-    var width = 1500;
-    var height = 1500;
 
     var dateFormatter = d3.time.format("%Y%m%d"); // see: https://github.com/mbostock/d3/wiki/Time-Formatting
 
-    var initVis = function(){    // call this function after Data is loaded, reformatted and bound to the variables
+    var initVis = function(){    // call this function after data is loaded, reformatted and bound to the variables
 
         var MyEventHandler = {};
         var color = d3.scale.category20();
@@ -69,16 +74,19 @@ $(function(){ // this function is called after the HTML document is fully loaded
         MultiLineVis = new MultiLineVis(MyEventHandler,color);
         StackedBarVis = new StackedBarVis(MyEventHandler,color);
         SankeyVis = new SankeyVis();
+        MapVis = new MapVis();
       
         //***Data Wrangling
         Wrangling = new Wrangling();
 
         $(MyEventHandler).bind("barSelected", function(event, barId){
             MultiLineVis.barSelected(barId)
+            MapVis.barSelected(barId)
         });
         $(MyEventHandler).bind("dateChanged", function(event, selDate){
             var shownDate = StackedBarVis.dateChanged(selDate)
             MultiLineVis.dateChanged(shownDate);
+            MapVis.dateChanged(shownDate)
         });
     }
 
@@ -93,7 +101,10 @@ $(function(){ // this function is called after the HTML document is fully loaded
             
             initVis();
 
-            //multipule line chart
+            //California Map
+            MapVis.createMap(_resData);
+
+            //multiple line chart
             resDataTop10 = MultiLineVis.PickTop10(_resData);
             MultiLineVis.createMultiLine(_resData);
 

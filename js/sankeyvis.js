@@ -3,11 +3,11 @@ SankeyVis = function(){
 
 SankeyVis.prototype.createSankey = function(graph){
 
-	var units = "Mgal/Day";
+	var units = "Mgal/day";
 	 
 	var margin = {top: 10, right: 10, bottom: 10, left: 10},
-	    width = 1200 - margin.left - margin.right,
-	    height = 600 - margin.top - margin.bottom;
+	    width = 1300 - margin.left - margin.right,
+	    height = 650 - margin.top - margin.bottom;
 	 
 	var formatNumber = d3.format(",.0f"),    // zero decimal places
 	    format = function(d) { return formatNumber(d) + " " + units; },

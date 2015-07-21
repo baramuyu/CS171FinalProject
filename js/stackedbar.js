@@ -21,7 +21,7 @@ StackedBarVis.prototype.barClick = function(_status){
 
 StackedBarVis.prototype.filterData = function(_data){
     return _data.filter(function(d){
-        return d.name != "ALL RESERVOIR AVERAGE" && d.capacity != "NA" && d.id != "EXC" ; //"EXC"->strange data
+        return d.name != "ALL RESERVOIR AVERAGE" && d.capacity != "NA" && d.id != "EXC" ; //"EXC"->dirty data
     })
 }
 
@@ -50,7 +50,7 @@ StackedBarVis.prototype.getDateHasData = function(_date){
                 throw BreakException;
             }
         })
-    }catch(e){ //nothing
+    }catch(e){ //no action taken
     }
 
     return (index == 0) ? that.dateList[index] : that.dateList[index - 1];
@@ -64,7 +64,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
     var fmDate = d3.time.format("%x");
     var xAxisDate = fmDate(parseDate(selDate))
 
-    //Data wrangling
+    //data wrangling
     var y0 = 0;
     var y1 = 0;
     var index = -1;
@@ -72,7 +72,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
     var count = 0;
     data = 
     [{
-        state: "Storage on " + xAxisDate,
+        state: xAxisDate,
         storages: filData.map(function(d, i) {
             index = -1;
             try{      
@@ -82,7 +82,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
                         throw BreakException;
                     }
                 })
-            }catch(e){ //nothing
+            }catch(e){ //no action taken
             }
 
             if(index == -1)
@@ -126,7 +126,7 @@ StackedBarVis.prototype.reformatData = function(_data, _selectedDate){
         return d3.descending(a["capacity"], b["capacity"]);
     })
 
-    //Current
+    //current
     //update y0,y1
     var y0 = 0;
     var y1 = 0;
@@ -165,8 +165,8 @@ StackedBarVis.prototype.createStackBar = function(_resData){
     var oldData = _resData;
     var that = this;
 
-    var margin = {top: 20, right: 50, bottom: 30, left: 40},
-        width = 400 - margin.left - margin.right,
+    var margin = {top: 20, right: 0, bottom: 60, left: 0},
+        width = 250 - margin.left - margin.right,
         height = 600 - margin.top - margin.bottom;
 
     var x = d3.scale.ordinal()
@@ -238,7 +238,7 @@ StackedBarVis.prototype.createStackBar = function(_resData){
         .append("text")
           //.attr("transform", "rotate(-90)")
           .attr("y", -20)
-          .attr("x", -35)
+          .attr("x", 0)
           .attr("dy", ".71em")
           .style("text-anchor", "start")
           .text("Storage (acre-ft)");
@@ -330,7 +330,16 @@ StackedBarVis.prototype.createStackBar = function(_resData){
 
               that.onbar = false;
           })
+
+          that.svg.append("text").attr({x: 65, y: 553, "text-anchor" : "middle", "font-size": "15px"
+            }).style({fill: "black" 
+            }).text("Storage")
+
+          that.svg.append("text").attr({x: 185, y: -8, "text-anchor" : "middle", "font-size": "15px"
+          }).style({fill: "red" 
+          }).text("Click the Bars")
 }
+
 
 StackedBarVis.prototype.updateStackBar = function(_date){
     var that = this;
